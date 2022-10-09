@@ -21,7 +21,43 @@ class AttendanceReportController extends CI_Controller
         // ini_set('max_execution_time', 30000);
     }
 
-
+    public function myAttendance(){
+        $dateFrom = $this->input->post('date_from');
+        //echo $dateFrom;
+        $dateTo = $this->input->post('date_to');
+        if($this->input->post()){
+            if($dateFrom && $dateTo){
+                $html = '';
+                $html .= '<table class="table table-sm table-bordered">';
+                $html .= '<thead>';
+                $html .= '<tr>';
+                    $html .= '<th>Attendance Date</th>';
+                    $html .= '<th>In Time</th>';
+                    $html .= '<th>Out Time</th>';
+                    $html .= '<th>Remarks</th>';
+                    $dateRange = dateRange($dateFrom, $dateTo);
+                    $contentId =  $this->session->userdata('content_id');
+                    foreach($dateRange as $date):
+                        if(date('Y-m-d') < date('Y-m-d',strtotime($date)))
+                        continue;
+                        $result = $this->employeeDailyAttendanceStatus($contentId, $date);
+                        $html .= '</tr>';
+                        $html .= '<tr>';
+                        $html .= '<td>'.$date.'</td>';
+                        $html .= '<td>'.$result["login"].'</td>';
+                        $html .= '<td>'.$result["logout"].'</td>';
+                        $html .= '<td>'.$result["remarks"].'</td>';
+                        $html .= '</tr>';
+                    endforeach;
+                $html .= '</thead>';
+                $html .= '</table>';
+                echo $html;
+                return false;
+            }
+        }
+        
+        $this->load->view('attendance/my_attendance');
+    }
 
     function getCompanyWiseBranch()
     {
