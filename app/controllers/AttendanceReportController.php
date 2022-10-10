@@ -611,6 +611,8 @@ class AttendanceReportController extends CI_Controller
             $totalAbsent=
             $dailyMovement=
             $attendanceException=0;
+            $totalHours=0;
+            $totalMinutes=0;
             foreach ($date_range as $date) :
                 if(date('Y-m-d') < date('Y-m-d',strtotime($date)))
                     continue;
@@ -636,12 +638,14 @@ class AttendanceReportController extends CI_Controller
                 $weeklyHolidayColor = ($result["status"]=='W.H')?'background-color:#e6ffe6':'';
                 $bgColor = ($result["status"]=='A')?'background-color:#ffb3b3':(($result["status"]=='L' || $result["status"]=='E' || $result["status"]=='L.E')?'background-color:#ffff1a':'');
                 $fontColor = ($result["status"]=='A' || $result["status"]=='L' || $result["status"]=='E' || $result["status"]=='L.E')?'color:red':'';
-                
+                $workingDuration = $this->timeDiff("$date $login","$date $logout");
+                $totalHours += $workingDuration['hours'];
+                $totalMinutes += $workingDuration['minutes'];
                 $html .= '<tr style="'.$weeklyHolidayColor.'">
                 <td>' . date('d-M-Y', strtotime($date)) . '</td>
                 <td>' . $login . '</td>
                 <td>' . $logout . '</td>
-                <td>' . $this->timeDiff("$date $login","$date $logout").'</td>
+                <td>' . $workingDuration['diff'].'</td>
                 <td style="'.$bgColor.'">' . $result['status'] . '</td>
                 <td style="'.$fontColor.'">' . $result['remarks'] . '</td>
             </tr>';
@@ -667,6 +671,11 @@ class AttendanceReportController extends CI_Controller
                 $totalLateEarly++;
             }
             endforeach;
+            $extraHours = floor($totalMinutes/60);
+           // $extraHours =$totalMinutes/60;
+            $totalMinutes = $totalMinutes % 60;
+            // dd($extraHours);
+            $html .='<tr><td colspan="3"></td><td>Total Working Time: '.($totalHours+$extraHours).':'.$totalMinutes.' hours</td><td colspan="2"></td></tr>';
             $summary = 'Total Late:'.$totalLate.', Total Early:'.$totalEarly.', Total Late & Early:'.$totalLateEarly.', Total Leave:'.$totalLeave.', Total Absent:'.$totalAbsent.',  Attendance Exception:'.$attendanceException.', Daily Movement:'.$dailyMovement;
             $html .= '<tfoot><tr style="font-weight:bold"><td colspan="6">'.$summary.'</td></tr></tfoot>';
             $html .= '</tbody>';
@@ -696,11 +705,17 @@ class AttendanceReportController extends CI_Controller
         $mins = abs(floor(($difference-($years * 31536000)-($days * 86400)-($hours * 3600))/60));#floor($difference / 60);
         // return the difference
         #$timeDiff = $years . " Years, " . $days . " Days, " . $hours . " Hours, " . $mins . " Minutes.</p>";
+        
         $timeDiff = $hours . " Hours, " . $mins . " Minutes";
         if($years==0 && $days==0 && $hours==0 && $mins==0){
             $timeDiff='';
         }
-        return $timeDiff;
+        $data = array(
+            'hours' => $hours,
+            'minutes' => $mins,
+            'diff' => $timeDiff,
+        );
+        return $data;
     }
   
 
