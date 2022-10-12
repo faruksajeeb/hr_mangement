@@ -28,7 +28,7 @@ class ReportController extends CI_Controller{
 		SELECT emp_name, emp_id FROM search_field_emp WHERE content_id NOT IN(
 		SELECT DISTINCT content_id
 		FROM emp_attendance WHERE str_to_date(attendance_date, '%d-%m-%Y')=CURDATE() GROUP BY content_id) 
-		AND type_of_employee IN(1,155) 
+		AND type_of_employee NOT IN (153,473) 
 		ORDER BY emp_name
 		")->result();
 		 $this->load->view('reports/attendance/daily_absent',$data);
