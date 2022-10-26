@@ -28,6 +28,7 @@ echo load_js("canvasjs.min.js");
 <script src="<?php echo base_url(); ?>resources/plugins/chosenSelect/docsupport/init.js" type="text/javascript" charset="utf-8"></script>
 
 <script src="<?php echo base_url(); ?>resources/js/jquery.table2excel.js"></script>
+<script src="<?php echo base_url(); ?>resources/plugins/sweet-alert/sweetalert2.all.min.js"></script>
 
 <script>
     <?php

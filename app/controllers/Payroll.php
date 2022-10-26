@@ -34,6 +34,102 @@ class Payroll extends CI_Controller
         $this->user_department =  $this->session->userdata('user_department');
         $this->all_company_access = $this->users_model->getuserwisepermission("all_company_access", $this->user_id);
     }
+
+    public function sendPaylipMail(){
+        if($this->input->post()){
+            $payslipId = $this->input->post('payslip_id');
+            if($payslipId){
+                #save payslip
+                $this->load->library("pdf");
+                $mpdf = $this->pdf->load();
+                #require_once FCPATH . '/vendor/autoload.php';
+                $payslipInfo = $data['paySlipInfo'] = $this->Payroll_model->getPaySlipData($payslipId);
+                $data['emp_details_records'] = $this->emp_details_model->getallcontentByid($data['paySlipInfo']->content_id);
+                
+                $html = $this->load->view('payroll/payslip-pdf', $data, true);
+
+                $mpdf->WriteHTML(utf8_encode($html));
+                $generatedTime = date('Ym');
+                $pdfFilePath = "resources/payslips/".$generatedTime.$payslipId.".pdf";
+                $mpdf->Output($pdfFilePath, "F"); // Preview In browser
+
+                $empContentId = $payslipInfo->content_id;                
+                $empEmail = $this->db->query('SELECT field_value FROM emp_details WHERE field_name=? AND content_id=? ',array('emp_email',$empContentId))->row();
+                if($empEmail->field_value){
+                    $mail_from = 'dev4iidfc@gmail.com';
+                    $to = $empEmail->field_value;
+                    $to = 'ofsajeeb@gmail.com';
+                    #send mail
+                    $config = array(
+                        'protocol' => 'smtp',
+                        'smtp_host' => 'ssl://smtp.googlemail.com',
+                        #'smtp_host' => 'tls://smtp.googlemail.com',
+                        #'smtp_port' => 25,
+                        'smtp_port' => 465,
+                        // 'smtp_port' => 587,
+                        'smtp_user' => 'dev4iidfc@gmail.com',
+                        'smtp_pass' => 'vxtahblzvixlbizd',
+                        'mailtype'  => 'html',
+                        'charset'   => 'utf-8'
+                    );
+                    $this->load->library('email', $config);
+                    $this->email->initialize($config);
+                    $this->email->clear(TRUE);
+                    $this->email->set_newline("\r\n");
+                    if ($mail_from) {
+                        $this->email->from($mail_from, 'HR Software Dev Team');
+                    }
+                    $this->email->to($to);
+                    $this->email->subject('Payslip for the month of '.$payslipInfo->month_name . "' " . $payslipInfo->year);
+                    $message = "Dear <strong>".$payslipInfo->emp_name."</strong>, <br/><br/>
+                    Please find the payslip document attached with this mail. 
+                    Thank you.
+                    <br/><br/>
+                    If you have any query please feel free to contact with hr manager.
+                    <br/>
+                    <br/>
+                    With Regards,<br/>
+                    <strong>Human Resource Division</strong>";
+                    $this->email->message($message);
+
+                    // if ($cc) {
+                    //     $CI->email->cc($cc);
+                    // }
+
+                    // if ($bcc) {
+                    //     $CI->email->bcc($bcc);
+                    // }
+                    $this->email->attach(base_url().'resources/payslips/'.$generatedTime.$payslipId.'.pdf');
+                    // if ($attachment) {
+                    //     if (is_array($attachment)) {
+                    //         foreach ($attachment as $k222 => $v222) {
+                    //             $CI->email->attach($v222);
+                    //         }
+                    //     } else {
+                    //         $CI->email->attach($attachment);
+                    //     }
+                    // }
+                    // $reply_to = 'noreply@example.com';
+                    // if ($reply_to) {
+                    //     $this->email->reply_to($reply_to);
+                    // }
+
+                    #no email need to send - development environment
+                    if ($this->email->send()) {
+                        echo 'success';
+                    } else {
+                        #$CI->log_me($CI->email->print_debugger());
+                        // echo 'Mail not sent!';
+                        echo $this->email->print_debugger();
+                    }
+                }else{
+                    echo 'Employee email address not found! Please set an email address.';
+                }
+            }
+        }else{
+            echo 'Something went wrong!';
+        }
+    }
     public function getPayslipInfoById($id){
         if($id){
             $rst = $this->db->query("SELECT p.*,e.emp_id,e.emp_name FROM tbl_payroll p LEFT JOIN search_field_emp e ON e.content_id=p.content_id WHERE p.id=?",array($id))->row();
