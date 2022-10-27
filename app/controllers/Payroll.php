@@ -949,6 +949,7 @@ class Payroll extends CI_Controller
             $remarks = '';
             #dd($data['default_employee']);
             $staffSalarySetupNotFound = 0;
+            $staffSalarySetupNotFoundInfo = '';
             $payslipGenerated = 0;
             $payslipExist = 0;
             $payslipError = 0;
@@ -959,11 +960,14 @@ class Payroll extends CI_Controller
                 $year = $postData['year'];
                 $monthId = $postData['salary_month'];
                 $monthStartDate = "$year-$monthId-01";
+                $monthEndDate = date("Y-m-t", strtotime($monthStartDate));
+                // dd($monthEndDate);
                 ## get salary by effective date ----
-                $empSalaryInfo = $this->Payroll_model->getEmpSalaryInfoByContentId($empContentId, $monthStartDate);
+                $empSalaryInfo = $this->Payroll_model->getEmpSalaryInfoByContentId($empContentId, $monthEndDate);
 
                 if (!$empSalaryInfo) {
                     $staffSalarySetupNotFound++;
+                    $staffSalarySetupNotFoundInfo .= $staffSalarySetupNotFound.'. '.$singleEmp['emp_id'].'>>'.$singleEmp['emp_name'].'<br/>';
                     continue;
                 }
 
@@ -988,7 +992,7 @@ class Payroll extends CI_Controller
                 $this->session->set_flashdata('generate_error', $payslipError . " payslip not generated. somthing went wrong.");
             }
             if ($staffSalarySetupNotFound > 0) {
-                $this->session->set_flashdata('error', $staffSalarySetupNotFound . " staff salary setup not found! Please setup the salary first.");
+                $this->session->set_flashdata('error', $staffSalarySetupNotFound . " staff salary setup not found! Please setup the salary first.  <br/>".$staffSalarySetupNotFoundInfo."<br/>  <a href='staff-salary' style='text-decoration:underline;font-style:italic'>Go to Salary Setup Page</a>");
             }
             redirect('division-pay-slip-generation-manual');
         }
@@ -1066,7 +1070,7 @@ class Payroll extends CI_Controller
         //            echo $monthEndDate; exit;
         $startMonthInfo = explode('-', $startDate);
         $startMonth = $startMonthInfo[1];
-        $startYear = $startMonthInfo[0];
+        $startYear = $startMonthInfo[2];
         // echo $startYear; exit;
 
         // If Start and end date in  same month & this month salary -------------------
@@ -1097,6 +1101,13 @@ class Payroll extends CI_Controller
             $deductDaysSalary = $deductDays * $perDaySalary;
             $grossSalary = $grossSalary - $deductDaysSalary;
         }
+        // if($empContentId==63){
+        //     dd($startYear,1);
+        //     dd($year,1);
+        //     dd($remarks);
+        // }
+        
+
 
 
         ## Check payslip validation by employee joining date -------------

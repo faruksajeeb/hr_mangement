@@ -534,10 +534,7 @@
                                 <div class="row">
                                     <div class="col-md-6 col-xs-12 col-sm-12">
                                         <div class="row">
-                                            <div class="col-md-4"></div>
-                                            <div class="col-md-8">
-
-                                            </div>
+                                        <div class="col-md-12"><a href="salary-statement" class="btn btn-sm btn-info">Salary Statement Page >></a></div>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-xs-12 col-sm-12">
