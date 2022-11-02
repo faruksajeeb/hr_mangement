@@ -98,7 +98,7 @@ class Dashboard extends CI_Controller {
         if($id){
             $data['edit_info'] = $this->emp_leave_model->getLeaveByLeaveId($id);
             //        print_r($data['edit_info']);
-//        exit;
+        //        exit;
         }
         $allleavetype_vid = 16;
         $contentId = $this->session->userdata('content_id');
