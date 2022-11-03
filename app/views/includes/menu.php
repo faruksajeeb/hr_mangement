@@ -413,6 +413,12 @@ $viewDailyMovement = $this->users_model->getuserwisepermission("view_daily_movem
                       <li><a href="">Employee Wise</a></li>
                     </ul>
                   </li>
+                  <li><a href="#">Performance <span class="pull-right glyphicon glyphicon-menu-right"></span></a>
+                    <ul>
+                      <li><a href="<?php echo site_url(); ?>add-employee-performance">Add Employee Performance</a></li>
+                      <li><a href="<?php echo site_url(); ?>manage-employee-performance">Manage Employee Performance</a></li>
+                    </ul>
+                  </li>
               <?php }
               } ?>
             </ul>
@@ -717,7 +723,8 @@ $viewDailyMovement = $this->users_model->getuserwisepermission("view_daily_movem
                 <?php if ($user_type == 1) { ?>
                   <li><a href="#">Performance <span class="pull-right glyphicon glyphicon-menu-right"></span></a>
                     <ul>
-                      <li><a href="<?php echo site_url(); ?>empperformance/createperformance">Create Performance</a></li>
+                      <li><a href="<?php echo site_url(); ?>create-performance-session">Create Performance Session</a></li>
+                      <li><a href="<?php echo site_url(); ?>empperformance/createperformance">Create Performance (Old)</a></li>
                     </ul>
                   </li>
                 <?php } ?>

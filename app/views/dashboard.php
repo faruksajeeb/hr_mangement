@@ -89,7 +89,7 @@
                                     <i class="fa fa-users" style="font-size:50px"></i>
                                 </div>
                                 <div class="col-md-9">
-                                    Total Present <br />
+                                    Present Today <br />
                                     <div class="value"><?php echo $total_present; ?></div>
                                 </div>
                             </div>                        
@@ -102,7 +102,7 @@
                                     <i class="fa fa-users" style="font-size:50px"></i>
                                 </div>
                                 <div class="col-md-9">
-                                    Total Absent <br />
+                                     Absent Today<br />
                                     <div class="value"><?php echo $total_employee - $total_present; ?></div>
                                 </div>
                             </div>                        
@@ -116,7 +116,7 @@
                                 </div>
                                 <div class="col-md-9">
                                     On Leave Today <br />
-                                    <div class="value"><?php echo $todaysLeave=0; ?></div>
+                                    <div class="value"><?php echo $on_leave_today; ?></div>
                                 </div>
                             </div>                        
                         </div>

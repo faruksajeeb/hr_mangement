@@ -259,7 +259,7 @@
                                                 ?>
                                             </td>
                                             <td  style="text-align:center">
-                                                <?php if ($this->session->userdata('user_type') == 10) { ?>
+                                                <?php if ($this->session->userdata('user_type') == 1) { ?>
                                                     <a href="#" rel="tooltip" data-placement="top" data-inputclass="select_class"  class="leave_status" id="approve_status" data-type="select"data-title="Change Status" data-pk="<?php echo $employee_leave->id; ?>" data-url="<?php echo base_url(); ?>leavemaster/updateLeaveStatus/emp_leave" >                                         
                                                         <?php
                                                         if ($employee_leave->approve_status == 'pending') {

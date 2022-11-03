@@ -36,7 +36,13 @@ class Dashboard extends CI_Controller {
            $data['departments'] = $this->db->query("SELECT id,name as department_name FROM taxonomy WHERE vid=22 AND status=1")->result();
 		   $data['total_employee']=$this->db->query("SELECT COUNT(id) as total_employee FROM search_field_emp WHERE type_of_employee NOT IN (153,473)")->row('total_employee');
 		   $data['total_present']=$this->db->query("SELECT COUNT(DISTINCT content_id) as total_present FROM emp_attendance WHERE str_to_date(attendance_date, '%d-%m-%Y')=CURDATE()")->row('total_present');
-		   $data['dep_attendance_data'] = $this->db->query("
+		   date_default_timezone_set('Asia/Dhaka');
+           $today = date('d-m-Y');
+           $data['on_leave_today']=$this->db->query("SELECT IFNULL(COUNT(id),0) AS on_leave_today FROM emp_leave 
+           WHERE STR_TO_DATE(leave_start_date,'%d-%m-%Y') <= STR_TO_DATE('$today','%d-%m-%Y') AND
+           STR_TO_DATE(leave_end_date,'%d-%m-%Y') >= STR_TO_DATE('$today','%d-%m-%Y')")->row('on_leave_today');
+
+           $data['dep_attendance_data'] = $this->db->query("
 		   SELECT COUNT(DISTINCT EA.content_id) as totalPresent, T.name as DepartmentName 
            FROM emp_attendance EA
 		   LEFT JOIN search_field_emp SFE ON SFE.content_id = EA.content_id
