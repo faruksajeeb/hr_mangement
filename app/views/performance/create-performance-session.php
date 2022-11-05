@@ -63,11 +63,9 @@
                                     <input type="text" class="form-control datepicker" name="" id="">
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Status</label>
-                                    <select name="" id="" class="form-control">
-                                        <option value="1">Active</option>
-                                        <option value="0">Inactive</option>
-                                    </select>
+                                    <label for="">Performance Criteria</label><br/>
+                                    <input type="checkbox" class="general" name="general" id="general"> General
+                                    <input type="checkbox" class="business" name="business" id="business"> Business
                                 </div>
                                 <div class="form-group">
                                     <label for="">Description</label>
@@ -91,7 +89,8 @@
                                     <th>Evaluation Period From</th>
                                     <th>Evaluation Period Till</th>
                                     <th>Last Date of Submission</th>
-                                    
+                                    <th>General</th>
+                                    <th>Business</th>                                    
                                     <th>Description</th>
                                     <?php if ($user_type == 1) { ?>
                                         <th>Status</th>
@@ -107,6 +106,8 @@
                                     <td><?php echo $val->appraisal_period_from; ?></td>
                                     <td><?php echo $val->appraisal_period_to; ?></td>
                                     <td><?php echo $val->last_submission_date; ?></td>
+                                    <td><?php echo $val->general; ?></td>
+                                    <td><?php echo $val->business; ?></td>
                                     <td><?php echo $val->remarks; ?></td>
                                     <?php if ($user_type == 1) { ?>
                                     <td><?php echo $val->status; ?></td>
