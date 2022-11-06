@@ -46,7 +46,7 @@ class PerformanceController extends CI_Controller
                 'created_at'=>date('Y-m-d H:i:s',time()),
                 'created_by'=> $this->session->userdata('user_id')
             );
-            dd($performanceData);
+            //dd($performanceData);
         }
         $data['user_id'] = $this->session->userdata('employee_id');
         if (!$data['user_id']) {
