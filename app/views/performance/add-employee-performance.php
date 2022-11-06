@@ -101,15 +101,17 @@
             });
             $('#general_performance_section').on('change', '.rate', function() {
                 let rateScore = $(this).val();
+               
                 tr = $(this).parent().parent();
-                let weight = tr.find('.weight').text();
+                let weight = tr.find('.weight').val();
+                
                 let score = tr.find('.general_score').val(weight * rateScore);
                 generalScoreTotal();
             });
             $('#business_performance_section').on('change', '.rate', function() {
                 let rateScore = $(this).val();
                 tr = $(this).parent().parent();
-                let weight = tr.find('.weight').text();
+                let weight = tr.find('.weight').val();
                 let score = tr.find('.business_score').val(weight * rateScore);
                 businessScoreTotal();
             });
@@ -269,52 +271,66 @@
                                                     <th style="text-align:center; width:200px">Rating</th>
                                                     <th style="text-align:center; width:100px">Score</th>
                                                 </tr>
-                                                <?php foreach ($general_performance_indicators as $key => $val) :
+                                                <?php 
+
+                                                foreach ($general_performance_indicators as $key => $val) :
 
                                                     $subIndicators = $this->db->query("SELECT * FROM performance_criteria_competency_details WHERE performance_criteria_competency_id=?", array($val->id))->result();
-
+                                                    
                                                     if (count($subIndicators) > 0) {
                                                 ?>
                                                         <tr>
-                                                            <td colspan="4" style="font-weight:bold;font-size:15px"><?php echo ($key + 1) . '. ' . $val->competency_performance_indicator; ?></td>
+                                                            <td colspan="4" style="font-weight:bold;font-size:15px"><?php echo ($key + 1) . '. ' . $val->competency_performance_indicator; ?>
+                                                            
+                                                        </td>
                                                         </tr>
                                                         <?php
+                                                        $parent_id = $val->id;
                                                         foreach ($subIndicators as $subVal) {
                                                         ?>
                                                             <tr>
-                                                                <td style="padding:8px 0 0 30px!important"><?php echo $subVal->name; ?></td>
-                                                                <td style="text-align:center;padding:8px 0 0 0!important" class="weight"><?php echo $subVal->weight; ?></td>
+                                                                <td style="padding:8px 0 0 30px!important"><?php echo $subVal->name; ?>
+                                                                <input type="hidden" name="performance_criteria_parent_id[]" value="<?php echo $parent_id; ?>">
+                                                                <input type="hidden" name="performance_criteria_id[]" value="<?php echo $subVal->id; ?>">
+                                                            </td>
+                                                                <td style="text-align:center;" >
+                                                                    <input type="text" class="form-control weight" style="text-align:center;" name="general_weight[]" value="<?php echo $subVal->weight; ?>" readonly>
+                                                                </td>
                                                                 <td>
-                                                                    <select name="rate" id="" class="form-control rate">
+                                                                    <select name="general_rate[]" id="" class="form-control rate">
                                                                         <option value="">--select rate--</option>
                                                                         <?php foreach ($performance_ratings as $val) : ?>
                                                                             <option value="<?php echo $val->score; ?>"><?php echo $val->title . ' (' . $val->score . ')'; ?></option>
                                                                         <?php endforeach; ?>
                                                                     </select>
                                                                 </td>
-                                                                <td><input type="number" name="" id="" class="general_score" readonly></td>
+                                                                <td><input type="number" name="general_score[]" id="" class="form-control general_score" readonly></td>
                                                             </tr>
                                                         <?php
                                                         }
                                                     } else {
                                                         ?>
                                                         <tr>
-                                                            <td style="padding-left:30px"><?php echo $val->competency_performance_indicator; ?></td>
-                                                            <td style="text-align:center;" class="weight"><?php echo $val->weight; ?></td>
-                                                            <td><select name="rate" id="" class="form-control rate">
+                                                            <td style="padding-left:30px"><?php echo $val->competency_performance_indicator; ?>
+                                                            <input type="hidden" name="performance_criteria_parent_id[]" value="<?php echo $val->id; ?>">
+                                                        </td>
+                                                            <td style="text-align:center;">
+                                                                <input type="text" class="form-control weight" style="text-align:center;" name="general_weight[]" value="<?php echo $subVal->weight; ?>" readonly>
+                                                            </td>
+                                                            <td><select name="general_rate[]" id="" class="form-control rate">
                                                                     <option value="">--select rate--</option>
                                                                     <?php foreach ($performance_ratings as $val) : ?>
                                                                         <option value="<?php echo $val->score; ?>"><?php echo $val->title . ' (' . $val->score . ')'; ?></option>
                                                                     <?php endforeach; ?>
                                                                 </select></td>
-                                                            <td><input type="number" name="" id="" class="general_score" readonly></td>
+                                                            <td><input type="number" name="general_score[]" id="" class="general_score" readonly></td>
                                                         </tr>
                                                 <?php
                                                     }
                                                 endforeach; ?>
                                                 <tr>
                                                     <td colspan="3">TOTAL SCORE</td>
-                                                    <td><input id="total_general_score" readonly name=""></td>
+                                                    <td><input id="total_general_score" readonly name="total_general_score"></td>
                                                 </tr>
                                             </table>
                                             <p style="font-weight:bold; font-style:italic;font-size:15px">*** Total weightings must equal to 100 </p>
@@ -337,25 +353,33 @@
                                                     if (count($subIndicators) > 0) {
                                                 ?>
                                                         <tr>
-                                                            <td colspan="4" style="font-weight:bold;font-size:15px"><?php echo ($key + 1) . '. ' . $val->deliverable_area_or_perspective; ?></td>
+                                                            <td colspan="4" style="font-weight:bold;font-size:15px"><?php echo ($key + 1) . '. ' . $val->deliverable_area_or_perspective; ?>
+                                                            
+                                                        </td>
                                                         </tr>
                                                         <?php
+                                                        $parentId = $val->id;
                                                         foreach ($subIndicators as $subVal) {
                                                         ?>
                                                             <tr>
-                                                                <td style="padding:8px 0 0 30px!important"><?php echo $subVal->name; ?></td>
+                                                                <td style="padding:8px 0 0 30px!important"><?php echo $subVal->name; ?>
+                                                                <input type="hidden" name="performance_bus_criteria_parent_id[]" value="<?php echo $parentId; ?>">
+                                                            <input type="hidden" name="performance_bus_criteria_id[]" value="<?php echo $subVal->id; ?>">
+                                                            </td>
                                                                 <td style="text-align:center;padding:8px 0 0 0!important"><?php echo $subVal->target_or_kpi; ?></td>
                                                                 <td style="text-align:center;padding:8px 0 0 0!important"><?php echo $subVal->achivment; ?></td>
-                                                                <td style="text-align:center;padding:8px 0 0 0!important" class="weight"><?php echo $subVal->weight; ?></td>
+                                                                <td style="text-align:center;">
+                                                                    <input type="text" class="form-control weight" style="text-align:center;" name="business_weight[]" value="<?php echo $subVal->weight; ?>" readonly>
+                                                                </td>
                                                                 <td>
-                                                                    <select name="rate" id="" class="form-control rate">
+                                                                    <select name="business_rate[]" id="" class="form-control rate">
                                                                         <option value="">--select rate--</option>
                                                                         <?php foreach ($performance_ratings as $val) : ?>
                                                                             <option value="<?php echo $val->score; ?>"><?php echo $val->title . ' (' . $val->score . ')'; ?></option>
                                                                         <?php endforeach; ?>
                                                                     </select>
                                                                 </td>
-                                                                <td><input type="number" name="" id="" class="business_score" readonly></td>
+                                                                <td><input type="number" name="business_score[]" id="" class="business_score" readonly></td>
                                                             </tr>
                                                         <?php
                                                         }
@@ -364,24 +388,28 @@
                                                         <tr>
                                                             <td style="padding-left:30px"><strong><?php echo ($key + 1) . '. ' . $val->deliverable_area_or_perspective ?> </strong><?php if ($val->description) {
                                                                                                                                                                                         echo ' [' . $val->description . ']';
-                                                                                                                                                                                    } ?></td>
+                                                                                                                                                                                    } ?>
+                                                                                                                                                                                    <input type="hidden" name="performance_bus_criteria_parent_id[]" value="<?php echo $val->id; ?>">
+                                                                                                                                                                                </td>
                                                             <td style="text-align:left;"><?php echo $val->target_or_kpi; ?></td>
                                                             <td style="text-align:left;"><?php echo $val->achivment; ?></td>
-                                                            <td style="text-align:center;" class="weight"><?php echo $val->weight; ?></td>
-                                                            <td><select name="rate" id="" class="form-control rate">
+                                                            <td style="text-align:center;" >
+                                                                <input type="text" class="form-control weight" style="text-align:center;" name="business_weight[]" value="<?php echo $subVal->weight; ?>" readonly>
+                                                            </td>
+                                                            <td><select name="business_rate[]" id="" class="form-control rate">
                                                                     <option value="">--select rate--</option>
                                                                     <?php foreach ($performance_ratings as $val) : ?>
                                                                         <option value="<?php echo $val->score; ?>"><?php echo $val->title . ' (' . $val->score . ')'; ?></option>
                                                                     <?php endforeach; ?>
                                                                 </select></td>
-                                                            <td><input type="number" name="" id="" class="business_score" readonly></td>
+                                                            <td><input type="number" name="business_score[]" id="" class="business_score" readonly></td>
                                                         </tr>
                                                 <?php
                                                     }
                                                 endforeach; ?>
                                                 <tr>
                                                     <td colspan="5">TOTAL SCORE</td>
-                                                    <td><input id="total_business_score" readonly name=""></td>
+                                                    <td><input id="total_business_score" readonly name="total_business_score"></td>
                                                 </tr>
                                             </table>
                                             <p style="font-weight:bold; font-style:italic;font-size:15px">*** Total weightings must equal to 100 </p>

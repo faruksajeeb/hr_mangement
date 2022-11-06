@@ -25,7 +25,28 @@ class PerformanceController extends CI_Controller
 
     public function addEmployeePerformance()
     {
-        if ($this->input->post()) {
+        if ($postData = $this->input->post()) {
+            
+            $empContentId = $postData['emp_content_id'];
+            $performanceSessionId = $postData['performance_session_id'];
+            $empInfo = $this->db->query("SELECT * FROM search_field_emp WHERE content_id=?", array($empContentId))->row();
+            $performanceSessionInfo = $this->db->query("SELECT * FROM performance_sessions WHERE id=?", array($performanceSessionId))->row();
+            $appraiserContentId = $postData['appraiser_content_id'];
+            $performanceData = array(
+                'performance_session_id'=>$performanceSessionId,
+                'content_id'=>$empContentId,
+                'emp_id'=>$empInfo->emp_id,
+                'company_id'=>$empInfo->emp_division,
+                'division_id'=>$empInfo->emp_department,
+                'department_id'=>$empInfo->department_id,
+                'designation_id'=>$empInfo->emp_post_id,
+                'appraiser_id'=>$appraiserContentId,
+                'date_from'=>$performanceSessionInfo->appraisal_period_from,
+                'date_to'=>$performanceSessionInfo->appraisal_period_to,
+                'created_at'=>date('Y-m-d H:i:s',time()),
+                'created_by'=> $this->session->userdata('user_id')
+            );
+            dd($performanceData);
         }
         $data['user_id'] = $this->session->userdata('employee_id');
         if (!$data['user_id']) {
