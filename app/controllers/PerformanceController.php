@@ -165,7 +165,7 @@ class PerformanceController extends CI_Controller
         LEFT JOIN search_field_emp as ap ON ap.content_id=p.appraiser_id")->result();
         
         $this->load->view('performance/manage-employee-performance',$data);
-    }
+    } 
 
     public function printSinglePerformance($id){
         $this->load->library("pdf");  
