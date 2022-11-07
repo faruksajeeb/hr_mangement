@@ -151,6 +151,24 @@
                             <h4 class="text-center">Add Employee Performance Appraisal</h4>
                         </div>
                         <div class="card-body">
+                        <?php
+                                    $msg = $this->session->flashdata('success');
+                                    if ($msg) {
+                                    ?>
+                                        <br />
+                                        <div class="alert alert-success text-center">
+                                            <strong>Success!</strong> <?php echo $msg ?>
+                                        </div>
+                                    <?php } 
+                                    $msg = null;
+                                     $msg = $this->session->flashdata('error');
+                                    if ($msg) {
+                                    ?>
+                                        <br />
+                                        <div class="alert alert-success text-center">
+                                            <strong>Success!</strong> <?php echo $msg ?>
+                                        </div>
+                                    <?php } $msg = null; ?>
                             <form action="" method="POST">
                                 <div class="row">
                                     <div class="col-md-7 col-sm-12">
