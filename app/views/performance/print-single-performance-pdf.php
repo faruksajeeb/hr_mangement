@@ -608,7 +608,7 @@
                 <td style="text-align:center">
                 <?php
                 echo $generalScore = ($totalScoreGeneral*40)/100;
-                ?>
+                ?> 
               </td>
                 <td style="text-align:center">
               <?php
