@@ -170,13 +170,73 @@ class PerformanceController extends CI_Controller
     public function printSinglePerformance($id){
         $this->load->library("pdf");  
         $mpdf = $this->pdf->load();
+        $data['performance_ratings'] = $this->db->query("SELECT * FROM performance_ratings WHERE status=1")->result();
+        $generalIndicatorRatings = $this->db->query("SELECT PCD.*,PCC.competency_performance_indicator as indicator_name,PCCD.name as sub_indicator_name 
+        FROM performances_competency_details  PCD
+        LEFT JOIN performance_criteria_competency PCC ON PCC.id=PCD.performance_criteria_parent_id
+        LEFT JOIN performance_criteria_competency_details PCCD ON PCCD.id=PCD.performance_criteria_id
+        WHERE performance_id=$id")->result();
+        $customGeneralPerformancesDetails=array();
+        foreach($generalIndicatorRatings as $val):
+            $parentId = $val->performance_criteria_parent_id;
+            $customGeneralPerformancesDetails[$parentId]['parent_indicator_name']= $val->indicator_name;
+            $customGeneralPerformancesDetails[$parentId]['weight']= $val->weight;
+            $customGeneralPerformancesDetails[$parentId]['rating']= $val->rating;
+            $customGeneralPerformancesDetails[$parentId]['score']= $val->score;
+            $customGeneralPerformancesDetails[$parentId]['records'][]=  $val;
+        endforeach;
+
+        $businessIndicatorRatings = $this->db->query("SELECT PBD.*,
+        PCB.deliverable_area_or_perspective as indicator_name,
+        PCB.target_or_kpi,
+        PCB.achivment,
+        PCBD.name as sub_indicator_name, 
+        PCBD.name as sub_target_or_kpi, 
+        PCBD.name as sub_achivment 
+        FROM performances_business_details  PBD
+        LEFT JOIN performance_criteria_business PCB ON PCB.id=PBD.performance_criteria_parent_id
+        LEFT JOIN performance_criteria_business_details PCBD ON PCBD.id=PBD.performance_criteria_id
+        WHERE performance_id=$id")->result();
+        $customBusinessPerformancesDetails=array();
+        foreach($businessIndicatorRatings as $val):
+            $parentId = $val->performance_criteria_parent_id;
+            $customBusinessPerformancesDetails[$parentId]['parent_indicator_name']= $val->indicator_name;
+            $customBusinessPerformancesDetails[$parentId]['target_or_kpi']= $val->target_or_kpi;
+            $customBusinessPerformancesDetails[$parentId]['achivment']= $val->achivment;
+            $customBusinessPerformancesDetails[$parentId]['weight']= $val->weight;
+            $customBusinessPerformancesDetails[$parentId]['rating']= $val->rating;
+            $customBusinessPerformancesDetails[$parentId]['score']= $val->score;
+            $customBusinessPerformancesDetails[$parentId]['records'][]=  $val;
+        endforeach;
+        
+        $data['general_performances_rating_details'] = $customGeneralPerformancesDetails;
+        $data['business_performances_rating_details'] = $customBusinessPerformancesDetails;
+        
+        $data['companyInfo'] = $this->db->query("SELECT * FROM company_info WHERE id=1")->row();
+        $data['performanceInfo'] = $this->db->query("SELECT p.*,
+        e.emp_name,e.emp_id,
+        company.name as company_name,
+        division.name as division_name,
+        department.name as department_name,
+        designation.name as designation_name,
+        ps.performance_title,ap.emp_name as appraiser_name 
+        FROM performances p 
+        LEFT JOIN search_field_emp as e ON e.content_id=p.content_id
+        LEFT JOIN taxonomy as company ON company.id = p.company_id
+        LEFT JOIN taxonomy as division ON division.id = p.division_id
+        LEFT JOIN taxonomy as department ON department.id = p.department_id
+        LEFT JOIN taxonomy as designation ON designation.id = p.designation_id
+        LEFT JOIN performance_sessions as ps ON ps.id=p.performance_session_id
+        LEFT JOIN search_field_emp as ap ON ap.content_id=p.appraiser_id WHERE p.id=?",array($id))->row();
+        // $data['performancrGeneralInfo'] = $this->db->query()->result();
+        // $data['performancrBusinessInfo'] = $this->db->query()->result();
         $html = $this->load->view('performance/print-single-performance-pdf', $data, true);
        // $mpdf->SetProtection(array('print'), 'pass2open', 'pass2havefullaccess');
         // $mpdf->SetVisibility('screenonly'); 
         $mpdf->SetVisibility('printonly'); // This will be my code; 
         // $mpdf->SetVisibility('hidden');
        // $mpdf->SetProtection(array('copy','print','modify'), 'r', 'MyPassword');
-        $mpdf->SetJS('this.print();');
+        //$mpdf->SetJS('this.print();');
         $mpdf->WriteHTML(utf8_encode($html));
         $mpdf->Output();
     }

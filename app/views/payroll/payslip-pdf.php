@@ -181,15 +181,14 @@
                         <div class="col-md-12">
                             <div class="row" style="font-weight:normal;">
                                 <div class="col-md-2" style="width:80px; float: left"> 
-                                <img src="<?php echo base_url(); ?>resources/images/logo2.png" alt="" id="logo-img"/>
-                            </div>
+                                    <img src="<?php echo base_url(); ?>resources/images/logo2.png" alt="" id="logo-img"/>
+                                </div>
                                 <div class="col-md-8" style="width:600px; text-align: center;  float: right;padding-left: -100px;">
                                     <h1 style="font-size:25px;font-weight:bold; color:#015d3f"><?php echo $paySlipInfo->company_name; ?></h1>
                                     <!-- <p>House #25, Road #34, Gulshan-2, Dhaka-1212</p> -->
                                     <br/>
                                     <p style="padding:5px; background-color: #bc9732; color:#FFF; border-radius: 5px; width:100px;margin:0 auto; ">Payslip</p>
                                 </div>
-
                             </div>
                             <div class="row" style="padding: 5px;">
                                 <div class="col-md-2" style="width:80px; float: left"></div>

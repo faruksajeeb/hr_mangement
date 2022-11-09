@@ -96,7 +96,7 @@
                         <div class="card-body">
                             <form action="">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="">Employee *</label>
                                             <select name="emp_content_id" id="emp_content_id" class="form-control chosen-select">
@@ -124,6 +124,9 @@
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
+
+                                    </div>
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="">Department *</label>
                                             <select name="emp_department_id" id="emp_department_id" class="form-control chosen-select">
@@ -133,8 +136,6 @@
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Performance Session *</label>
                                             <select name="performance_session_id" id="performance_session_id" class="form-control chosen-select" required>
@@ -143,14 +144,6 @@
                                                     <option class="performance_session_option" value="<?php echo $val->id ?>"><?php echo $val->performance_title; ?></option>
                                                 <?php endforeach; ?>
                                             </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="">Evaluation Period From *</label>
-                                            <input type="text" class="form-control datepicker" name="" id="appraisal_period_from">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="">Evaluation Period To *</label>
-                                            <input type="text" class="form-control datepicker" name="" id="appraisal_period_to">
                                         </div>
                                         <div class="form-group">
                                             <label for="">Appraiser *</label>
@@ -162,6 +155,16 @@
                                                     </option>
                                                 <?php endforeach; ?>
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="">Evaluation Period From *</label>
+                                            <input type="text" class="form-control datepicker" name="" id="appraisal_period_from">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Evaluation Period To *</label>
+                                            <input type="text" class="form-control datepicker" name="" id="appraisal_period_to">
                                         </div>
                                     </div>
                                     <div class="col-md-12" style="text-align:center">
