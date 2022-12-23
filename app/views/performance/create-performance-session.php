@@ -63,9 +63,22 @@
                                     <input type="text" class="form-control datepicker" name="" id="">
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Performance Criteria</label><br/>
+                                    <label for="">Performance Criteria</label><br />
                                     <input type="checkbox" class="general" name="general" id="general"> General
                                     <input type="checkbox" class="business" name="business" id="business"> Business
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Performance Percentage(%) Ratio</label><br />
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            General: <input type="text" class="general_percentage" name="general_percentage" id="general_percentage" placeholder="Ex: 60">
+                                        </div>
+                                        <div class="col-md-6">
+                                            Business: <input type="text" class="business_percentage" name="business_percentage" id="business_percentage" placeholder="Ex: 40">
+                                        </div>
+                                    </div>
+
+
                                 </div>
                                 <div class="form-group">
                                     <label for="">Description</label>
@@ -90,7 +103,7 @@
                                     <th>Evaluation Period Till</th>
                                     <th>Last Date of Submission</th>
                                     <th>General</th>
-                                    <th>Business</th>                                    
+                                    <th>Business</th>
                                     <th>Description</th>
                                     <?php if ($user_type == 1) { ?>
                                         <th>Status</th>
@@ -99,24 +112,24 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach($records as $key=>$val): ?>
-                                <tr>
-                                    <td><?php echo $key+1; ?></td>
-                                    <td><?php echo $val->performance_title; ?></td>
-                                    <td><?php echo $val->appraisal_period_from; ?></td>
-                                    <td><?php echo $val->appraisal_period_to; ?></td>
-                                    <td><?php echo $val->last_submission_date; ?></td>
-                                    <td><?php echo $val->general; ?></td>
-                                    <td><?php echo $val->business; ?></td>
-                                    <td><?php echo $val->remarks; ?></td>
-                                    <?php if ($user_type == 1) { ?>
-                                    <td><?php echo $val->status; ?></td>
-                                    <?php } ?>
-                                    <td>
-                                        <a href="" class="btn btn-sm btn-warning">Edit</a>
-                                    </td>
-                                </tr>
-                                <?php endforeach;?>
+                                <?php foreach ($records as $key => $val) : ?>
+                                    <tr>
+                                        <td><?php echo $key + 1; ?></td>
+                                        <td><?php echo $val->performance_title; ?></td>
+                                        <td><?php echo $val->appraisal_period_from; ?></td>
+                                        <td><?php echo $val->appraisal_period_to; ?></td>
+                                        <td><?php echo $val->last_submission_date; ?></td>
+                                        <td><?php echo $val->general; ?></td>
+                                        <td><?php echo $val->business; ?></td>
+                                        <td><?php echo $val->remarks; ?></td>
+                                        <?php if ($user_type == 1) { ?>
+                                            <td><?php echo $val->status; ?></td>
+                                        <?php } ?>
+                                        <td>
+                                            <a href="" class="btn btn-sm btn-warning">Edit</a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
 

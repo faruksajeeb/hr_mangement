@@ -418,33 +418,25 @@
           </div>
           <div class="col-md-4" style="width: 200px;">
             <div class="overall_rating">
-              <table id="exampleee" class="display" cellspacing="0" width="100%" border="1" align="center">
-                <thead>
-                  <th colspan="2">Overall Performance Rating </th>
-                </thead>
-                <tbody>
+                <table class="table ">
                   <tr>
-                    <td>Excellent</td>
-                    <td>3.50 - 4.00</td>
-                  </tr>
+                    <th colspan="3">Performance Rating</th>
+  </tr>
                   <tr>
-                    <td>Good</td>
-                    <td>2.81 - 3.49</td>
-                  </tr>
-                  <tr>
-                    <td>Average</td>
-                    <td>2.01- 2.80</td>
-                  </tr>
-                  <tr>
-                    <td>Need Improvement</td>
-                    <td>1.00 - 2.00</td>
-                  </tr>
-                  <tr>
-                    <td>Unsatisfactory</td>
-                    <td>0.00 - 0.99</td>
-                  </tr>
-                </tbody>
-              </table>
+                    <th>Title</th>
+                    <th>Percentage(%)</th>
+                    <th>Score</th>
+  </tr>
+                  <tbody>
+                    <?php foreach ($performance_ratings as $val) : ?>
+                      <tr>
+                        <td><?php echo $val->title; ?></td>
+                        <td style="text-align:center"><?php echo $val->percentage_from . ' - ' . $val->percentage_to; ?></td>
+                        <td style="text-align:center"><?php echo $val->score; ?></td>
+                      </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                </table>
             </div>
           </div>
         </div>
@@ -481,7 +473,9 @@
                       <td style="text-align:center"><?php echo $subVal->rating; ?></td>
                       <td style="text-align:center"><?php echo $subVal->score; ?></td>
                     </tr>
-                  <?php endforeach; ?>
+                  <?php
+                    $totalScoreGeneral += $val['score'];
+                  endforeach; ?>
 
                 <?php
                 } else {
@@ -494,7 +488,9 @@
                     <td style="text-align:center"><?php echo $val['score']; ?></td>
                   </tr>
               <?php
+                  $totalScoreGeneral += $val['score'];
                 }
+
               endforeach;
               ?>
               <tr>
@@ -578,8 +574,8 @@
               </tr>
               <tr>
                 <td style="text-align:center">All Employees </td>
-                <td style="text-align:center">60%</td>
-                <td style="text-align:center">40%</td>
+                <td style="text-align:center"><?php echo $performanceInfo->business_percentage; ?>%</td>
+                <td style="text-align:center"><?php echo $performanceInfo->general_percentage; ?>%</td>
               </tr>
             </table>
             <br>
@@ -603,25 +599,26 @@
               </tr>
               <tr>
                 <td style="text-align:center"><?php
-                echo $businessScore = ($totalScoreBusiness*60)/100;
-                ?></td>
+                                              echo $businessScore = ($totalScoreBusiness * $performanceInfo->business_percentage) / 100;
+                                              ?></td>
                 <td style="text-align:center">
-                <?php
-                echo $generalScore = ($totalScoreGeneral*40)/100;
-                ?> 
-              </td>
+                  <?php
+
+                  echo $generalScore = ($totalScoreGeneral * $performanceInfo->general_percentage) / 100;
+                  ?>
+                </td>
                 <td style="text-align:center">
-              <?php
-              echo $overallPerformanceRatingPercentage = ($businessScore+$generalScore)/600*120;
-              // $overallPerformanceRatingPercentage =121;
-              ?>
-              </td>
+                  <?php
+                  echo $overallPerformanceRatingPercentage = ($businessScore + $generalScore) / 600 * 120;
+                  // $overallPerformanceRatingPercentage =121;
+                  ?>
+                </td>
                 <td style="text-align:center">
-                    <?php
-                    $perRating = $this->db->query("SELECT title FROM performance_ratings WHERE percentage_from <=$overallPerformanceRatingPercentage AND percentage_to >= $overallPerformanceRatingPercentage")->row();
-                    echo $perRating->title;
-                    ?>
-              </td>
+                  <?php
+                  $perRating = $this->db->query("SELECT title FROM performance_ratings WHERE percentage_from <=$overallPerformanceRatingPercentage AND percentage_to >= $overallPerformanceRatingPercentage")->row();
+                  echo $perRating->title;
+                  ?>
+                </td>
               </tr>
             </table>
           </div>

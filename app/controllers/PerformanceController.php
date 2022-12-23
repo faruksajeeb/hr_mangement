@@ -170,7 +170,9 @@ class PerformanceController extends CI_Controller
     public function printSinglePerformance($id){
         $this->load->library("pdf");  
         $mpdf = $this->pdf->load();
+       
         $data['performance_ratings'] = $this->db->query("SELECT * FROM performance_ratings WHERE status=1")->result();
+        
         $generalIndicatorRatings = $this->db->query("SELECT PCD.*,PCC.competency_performance_indicator as indicator_name,PCCD.name as sub_indicator_name 
         FROM performances_competency_details  PCD
         LEFT JOIN performance_criteria_competency PCC ON PCC.id=PCD.performance_criteria_parent_id
@@ -219,7 +221,9 @@ class PerformanceController extends CI_Controller
         division.name as division_name,
         department.name as department_name,
         designation.name as designation_name,
-        ps.performance_title,ap.emp_name as appraiser_name 
+        ps.performance_title,ap.emp_name as appraiser_name,
+        ps.general_percentage,
+        ps.business_percentage
         FROM performances p 
         LEFT JOIN search_field_emp as e ON e.content_id=p.content_id
         LEFT JOIN taxonomy as company ON company.id = p.company_id

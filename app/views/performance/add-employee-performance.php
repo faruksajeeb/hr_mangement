@@ -412,7 +412,7 @@
                                                             <td style="text-align:left;"><?php echo $val->target_or_kpi; ?></td>
                                                             <td style="text-align:left;"><?php echo $val->achivment; ?></td>
                                                             <td style="text-align:center;" >
-                                                                <input type="text" class="form-control weight" style="text-align:center;" name="business_weight[]" value="<?php echo $subVal->weight; ?>" readonly>
+                                                                <input type="text" class="form-control weight" style="text-align:center;" name="business_weight[]" value="<?php echo $val->weight; ?>" readonly>
                                                             </td>
                                                             <td><select name="business_rate[]" id="" class="form-control rate">
                                                                     <option value="">--select rate--</option>
