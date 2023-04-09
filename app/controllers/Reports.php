@@ -534,10 +534,12 @@ class Reports extends CI_Controller {
         $this->check_permission_controller->check_permission_action("view_attendance_log_reports");
         $searchpage = "logerrorreports";
         if ($this->input->post()) {
+           
             $this->form_validation->set_rules('emp_attendance_start_date', 'Attendance Start Date', 'required');
             if ($this->form_validation->run() == FALSE) {
                 $this->session->set_flashdata('errors', validation_errors());
             } else {
+               
                 $user_id = $this->session->userdata('user_id');
                 $this->search_query_model->deleteQuerybyUserid($user_id, $searchpage);
                 date_default_timezone_set('Asia/Dhaka');
@@ -545,6 +547,7 @@ class Reports extends CI_Controller {
                 $now = date("d-m-Y", $servertime);
                 $emp_att_start_date = $this->input->post('emp_attendance_start_date');
                 $emp_att_end_date = $this->input->post('emp_attendance_end_date');
+              
                 $params_contents = array(
                     'id' => '',
                     'search_query' => "",
@@ -564,6 +567,7 @@ class Reports extends CI_Controller {
         $data['defaultend_date'] = $default_emp_id['per_page'];
         $data['date_range'] = dateRange($emp_att_start_date, $emp_att_end_date);
         $data['logederrors'] = $this->log_maintenence_model->getemp_logedbyrange($emp_att_start_date, $emp_att_end_date);
+       # dd($data['logederrors']);
         $this->load->view('reports/attendance/logerrorreport', $data);
     }
 

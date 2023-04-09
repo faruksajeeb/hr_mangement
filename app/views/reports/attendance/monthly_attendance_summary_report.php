@@ -166,11 +166,10 @@
       $(".date_picker").datepicker({
         dateFormat: "dd-mm-yy"
       });
-      $("input[type=submit]").attr("disabled", "disabled");
+      //$("input[type=submit]").attr("disabled", "disabled");
       var companyId = 11; // IIDFC Company ID
       $("select#emp_division").val(companyId).trigger('change');
-      dependableBranch(companyId);
-
+          dependableBranch(companyId);
       $("#emp_division").change(function(e) {
         var companyId = $(this).val();
         dependableBranch(companyId);

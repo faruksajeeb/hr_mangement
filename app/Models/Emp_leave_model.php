@@ -151,6 +151,13 @@ class Emp_leave_model extends CI_Model
             return $this->db->query("select * from emp_leave WHERE content_id='$content_id' and leave_type !='336' and leave_year='$year' AND approve_status='approved' order by id ASC")->result_array();
         }
     }
+    public function getEmployeeMonthlyLeave($content_id, $startDate,$endDate)
+    {
+        if ($content_id && $startDate && $endDate) {
+            // dd($startDate);
+            return $this->db->query("select * from emp_leave WHERE content_id='$content_id' and leave_type !='336' and str_to_date(leave_start_date, '%d-%m-%Y') >= str_to_date('$startDate', '%d-%m-%Y') AND str_to_date(leave_end_date, '%d-%m-%Y') <= str_to_date('$endDate', '%d-%m-%Y') AND approve_status='approved' order by id ASC")->result_array();
+        }
+    }
     public function getemp_yearlyleavebyid($content_id)
     {
         if ($content_id) {

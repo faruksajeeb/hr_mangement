@@ -275,6 +275,8 @@ class LeaveReportController extends CI_Controller
     }
 
     public function leaveSummeryReport(){
+      
+
         $this->check_permission_controller->check_permission_action("view_leave_summery_reports");
         $searchpage = "leavesummeryreport";
         if ($this->input->post()) {
@@ -344,5 +346,83 @@ class LeaveReportController extends CI_Controller
             $data['alldivision'] = $this->taxonomy->getTaxonomyByvid($division_vid);
         }
         $this->load->view('reports/leave/leave_summery_report', $data);
+    }
+    public function leaveSummeryReportMonthly(){
+      
+
+        $this->check_permission_controller->check_permission_action("view_leave_summery_reports");
+        $searchpage = "leavesummeryreportmonthly";
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('emp_name[]', 'Name', 'required');
+            $this->form_validation->set_rules('emp_attendance_start_date', 'Leave Start Date', 'required');
+            $this->form_validation->set_rules('emp_attendance_end_date', 'Leave End Date', 'required');
+            if ($this->form_validation->run() == FALSE) {
+                $this->session->set_flashdata('errors', validation_errors());
+            } else {
+                $user_id = $this->session->userdata('user_id');
+                $this->search_query_model->deleteQuerybyUserid($user_id, $searchpage);
+                date_default_timezone_set('Asia/Dhaka');
+                $servertime = time();
+                $now = date("d-m-Y", $servertime);
+                $emp_division = $this->input->post('emp_division');
+                $emp_attendance_start_date = $this->input->post('emp_attendance_start_date');
+                $emp_attendance_end_date = $this->input->post('emp_attendance_end_date');
+                $codes = $this->input->post('emp_name');
+                $emp_codes_string = rtrim(implode(',', $codes), ',');
+                $query = $emp_division;
+                $params_contents = array(
+                    'id' => '',
+                    'search_query' => $query,
+                    'user_id' => $user_id,
+                    'table_view' => $emp_attendance_start_date,
+                    'month' => $emp_attendance_end_date,
+                    'per_page' => $emp_codes_string,
+                    'search_page' => $searchpage,
+                    'search_date' => $now,
+                );
+                $this->db->insert("search_query", $params_contents);
+            }
+        }
+        $default_division_id = $this->search_field_emp_model->getsearchQuery($searchpage);
+        // dd($default_division_id );
+        $division_id = $default_division_id['search_query'];
+        $emp_att_date = $default_division_id['table_view'];
+        $data['defaultdivision_id'] = $default_division_id['search_query'];
+        $data['defaultstart_date'] = $default_division_id['table_view'];
+        $data['default_start_date'] = $default_division_id['table_view'];
+        $data['default_end_date'] = $default_division_id['month'];
+        $emp_codes_query = $default_division_id['per_page'];
+        $data['emp_codes'] = explode(",", $emp_codes_query);
+        if ($division_id == 'all') {
+            $data['defsultdivision_name'] = "All";
+            $data['defsultdivision_shortname'] = "All";
+            $data['default_employee'] = $this->search_field_emp_model->getallemployeeorderdivision();
+        } else if ($division_id) {
+            $emp_division = $this->taxonomy->getTaxonomyBytid($division_id);
+            $data['defsultdivision_name'] = $emp_division['name'];
+            $data['defsultdivision_shortname'] = $emp_division['keywords'];
+            $data['default_employee'] = $this->search_field_emp_model->getallemployeebydivision($division_id);
+        }
+        $division_vid = 1;
+        $user_type = $this->session->userdata('user_type');
+        $user_id = $this->session->userdata('user_id');
+        $user_data = $this->users_model->getuserbyid($user_id);
+        $user_division_id = $user_data['user_division'];
+        $data['user_info'] = $this->users_model->getuserbyid($user_id);
+        $data['user_type_id'] = $this->session->userdata('user_type');
+        if ($user_id == 14) {
+            $data['allemployee'] = $this->search_field_emp_model->getall_left_employee();
+            $data['alldivision'] = $this->taxonomy->getTaxonomyBytid($user_division_id);
+        } else if ($user_type != 1) {
+            $data['alldivision'] = $this->taxonomy->getTaxonomyBytid($user_division_id);
+            // $data['allemployee']=$this->search_field_emp_model->getallemployeebydivision($user_division_id);
+            $emp_ids_data = $this->users_model->getpermittedemployee($user_id);
+            $content_ids = $emp_ids_data['emp_content_ids'];
+            $data['allemployee'] = $this->search_field_emp_model->getallsearch_table_contentByids($content_ids);
+        } else {
+            $data['allemployee'] = $this->search_field_emp_model->getallemployee();
+            $data['alldivision'] = $this->taxonomy->getTaxonomyByvid($division_vid);
+        }
+        $this->load->view('reports/leave/leave_summery_report_montly', $data);
     }
 }

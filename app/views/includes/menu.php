@@ -602,6 +602,7 @@ $viewDailyMovement = $this->users_model->getuserwisepermission("view_daily_movem
                         <li><a href="<?php echo site_url('single_leave_report'); ?>">Single Leave Reports</a></li>
                       <?php } ?>
                       <?php if ($user_type == 1 || $view_leave_summery_reports['status'] == 1) { ?>
+                        <li><a href="<?php echo site_url('leave_summery_report_monthly'); ?>">Leave Summery Reports Monthly</a></li>
                         <li><a href="<?php echo site_url('leave_summery_report'); ?>">Leave Summery Reports</a></li>
                       <?php } ?>
                     </ul>

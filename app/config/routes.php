@@ -59,6 +59,7 @@ $route['today_absent'] = 'ReportController/today_absent';
 
 //$route['login']='login/index';
 //$route['login']='login/adminLogin';
+$route['test']='TestController/test';
 $route['login']='login/index';
 $route['admin-login']='login/adminLogin';
 $route['employee-login']='login/employeeLogin';
@@ -321,7 +322,8 @@ $route['monthly_attendance_summary_report'] = 'AttendanceReportController/monthl
 # Leave Report
 $route['daily_leave_report'] = 'Report/LeaveReportController/daliyLeaveReport';
 $route['single_leave_report'] = 'Report/LeaveReportController/singleLeaveReport';
-$route['leave_summery_report'] = 'Report/LeaveReportController/leaveSummeryReport';
+$route['leave_summery_report'] = 'Report/LeaveReportController/leaveSummeryReport'; //yearly
+$route['leave_summery_report_monthly'] = 'Report/LeaveReportController/leaveSummeryReportMonthly';
 
 # Payroll Report
 $route['pay-slip-report'] = 'Report/PayrollReportController/paySlipReport';

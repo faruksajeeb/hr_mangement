@@ -104,6 +104,8 @@
                                     <th>Last Date of Submission</th>
                                     <th>General</th>
                                     <th>Business</th>
+                                    <th>General Ration Percentage</th>
+                                    <th>Business Ration Percentage</th>
                                     <th>Description</th>
                                     <?php if ($user_type == 1) { ?>
                                         <th>Status</th>
@@ -121,9 +123,11 @@
                                         <td><?php echo $val->last_submission_date; ?></td>
                                         <td><?php echo $val->general; ?></td>
                                         <td><?php echo $val->business; ?></td>
+                                        <td><?php echo $val->general_percentage; ?></td>
+                                        <td><?php echo $val->business_percentage; ?></td>
                                         <td><?php echo $val->remarks; ?></td>
                                         <?php if ($user_type == 1) { ?>
-                                            <td><?php echo $val->status; ?></td>
+                                            <td><?php echo ($val->status==1)? 'active':'inactive'; ?></td>
                                         <?php } ?>
                                         <td>
                                             <a href="" class="btn btn-sm btn-warning">Edit</a>

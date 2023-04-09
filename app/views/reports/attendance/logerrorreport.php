@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Attendance Error Reports</title>
+  <title>HRMS | Attendance Log Reports</title>
   <?php
   $this->load->view('includes/cssjs');
   date_default_timezone_set('Asia/Dhaka');
@@ -226,15 +226,15 @@ function popitup(url) {
                       <div class="col-md-8">
                         <div class="row">
                           <div class="col-md-3 bgcolor_D8D8D8">Start Date:</div>
-                          <div class="col-md-9"><input type="text" name="emp_attendance_start_date" class="datepicker numbersOnly" id="emp_attendance_start_date" value="<?php if($defaultstart_date){ print $defaultstart_date; }else{ print $first_day_this_month; } ?>" placeholder="dd-mm-yyyy"></div>
+                          <div class="col-md-6"><input type="text" name="emp_attendance_start_date" class="datepicker numbersOnly" id="emp_attendance_start_date" value="<?php if($defaultstart_date){ print $defaultstart_date; }else{ print $first_day_this_month; } ?>" placeholder="dd-mm-yyyy"></div>
                         </div> 
                         <div class="row">
                           <div class="col-md-3 bgcolor_D8D8D8">End Date:</div>
-                          <div class="col-md-9"><input type="text" name="emp_attendance_end_date" class="datepicker numbersOnly" id="emp_attendance_end_date" value="<?php if($defaultend_date){ print $defaultend_date; }else{ print $last_day_this_month; } ?>" placeholder="dd-mm-yyyy"></div>
+                          <div class="col-md-6"><input type="text" name="emp_attendance_end_date" class="datepicker numbersOnly" id="emp_attendance_end_date" value="<?php if($defaultend_date){ print $defaultend_date; }else{ print $last_day_this_month; } ?>" placeholder="dd-mm-yyyy"></div>
                         </div>                                                                                                                                                                                                                                                                                                                 
                         <div class="row top10 bottom10">
                           <div class="col-md-3"></div>
-                          <div class="col-md-9"><input type="submit" name="add_attendance_btn" value="Submit"></div>
+                          <div class="col-md-6"><input type="submit" name="add_attendance_btn" value="Submit"></div>
                         </div>
                       </div>
                       <div class="col-md-2"></div>
@@ -244,7 +244,7 @@ function popitup(url) {
                     <div class="row">
                       <div class="col-md-2"><input type="submit" style="width:100%" name="change_selected_status" value="Multiple Delete" ></div>            
                     </div> 
-                    <table id="example" class="display" cellspacing="0" width="100%">
+                    <table id="example" class="display table table-sm" cellspacing="0" width="100%">
                       <thead>
                         <tr class="heading">
                           <th style="padding-left: 10px;text-align: left;width:10px!important"><input type='checkbox' class="check_all" id="check_all" value='all' /></th>
@@ -261,6 +261,7 @@ function popitup(url) {
                       <tbody>
                         <?php foreach ($logederrors as $single_log) {
                           $start_date=$single_log['start_date'];
+                          $company_id=$single_log['company_id'];
                           $division_id=$single_log['division_id'];
                           $department_id=$single_log['department_id'];
                           $content_id=$single_log['content_id'];
@@ -291,9 +292,15 @@ function popitup(url) {
                             $log_for=$emp_details_records['emp_name']."-".$emp_details_records['emp_id'];
                           }else if($division_id=="all"){
                             $log_for="All Division";
+                          }else if($company_id=="all"){
+                            $log_for="All Company";
                           }else if($division_id != NULL){
+                            $company_data=$this->taxonomy->getTaxonomyBytid($company_id);
                             $division_data=$this->taxonomy->getTaxonomyBytid($division_id);
-                            $log_for=$division_data['name'];
+                            $log_for=$company_data['keywords']." (".$division_data['name'].")";
+                          }else if($company_id != NULL){
+                            $company_data=$this->taxonomy->getTaxonomyBytid($company_id);
+                            $log_for=$company_data['name'];
                           }else{
                             $dep_data=$this->taxonomy->getTaxonomyBytid($department_id);
                             $log_for=$dep_data['keywords']." (".$dep_data['name'].")";
@@ -303,7 +310,7 @@ function popitup(url) {
                           <tr>
                             <td style="width:10px!important"><input type='checkbox' name='id[]' value='<?php print $id; ?>' /></td>  
                             <td><?php print $start_date; ?></td>
-                            <td><?php print $log_for; ?></td>
+                            <td style="text-align:left!important"><?php print $log_for; ?></td>
                             <td><?php print $late_status; ?></td>
                             <td><?php print $late_count_time; ?></td>
                             <td><?php print $early_status; ?></td>

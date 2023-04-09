@@ -1956,6 +1956,7 @@ class Savepdf extends CI_Controller
                 $data['defsultdivision_name'] = $emp_division['name'];
                 $data['defsultdivision_shortname'] = $emp_division['keywords'];
             }
+            
             $mpdf = $this->pdflandscape->load();
             $html = $this->load->view('print/printleavesummerypdf', $data, true);
             //$mpdf->SetVisibility('printonly'); // This will be my code; 
@@ -1963,9 +1964,42 @@ class Savepdf extends CI_Controller
             $mpdf->WriteHTML(utf8_encode($html));
             $mpdf->Output();
         } else {
-            redirect('reports/leavesummeryreport');
+            redirect('leave_summery_report');
         }
     }
+
+    public function leavesummarymonthlypdf(){
+        $this->load->library("pdflandscape");
+        $searchpage = "leavesummeryreportmonthly";
+        $default_division_id = $this->search_field_emp_model->getsearchQuery($searchpage);
+        if ($default_division_id) {
+            $emp_codes_query = $default_division_id['per_page'];
+            $data['emp_codes'] = explode(",", $emp_codes_query);
+            $division_id = $default_division_id['search_query'];
+            $data['default_start_date'] = $default_division_id['table_view'];
+            $data['default_end_date'] = $default_division_id['month'];
+            if ($division_id == 'all') {
+                $data['defsultdivision_name'] = "All";
+                $data['defsultdivision_shortname'] = "All";
+            } else if ($division_id) {
+                $emp_division = $this->taxonomy->getTaxonomyBytid($division_id);
+                $data['defsultdivision_name'] = $emp_division['name'];
+                $data['defsultdivision_shortname'] = $emp_division['keywords'];
+            }
+            
+            $mpdf = $this->pdflandscape->load();
+            $html = $this->load->view('print/printleavesummerymonthlypdf', $data, true);
+            //$mpdf->SetVisibility('printonly'); // This will be my code; 
+            $mpdf->SetJS('this.print();');
+            $mpdf->WriteHTML(utf8_encode($html));
+            $mpdf->Output();
+        } else {
+            redirect('leave_summery_report_monthly');
+        }
+    }
+
+
+
     public function leave_single_pdf()
     {
         $searchpage = "single_leave_report";

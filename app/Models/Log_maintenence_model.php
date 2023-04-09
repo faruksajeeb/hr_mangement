@@ -37,11 +37,16 @@ class Log_maintenence_model extends CI_Model
     }
     public function getemp_logedbyrange($emp_att_start_date, $emp_att_end_date)
     {
+      
         $empatt_start_date_arr = explode("-", $emp_att_start_date);
         $emp_att_end_date_arr = explode("-", $emp_att_end_date);
         $emp_att_start_date = $empatt_start_date_arr[2] . "-" . $empatt_start_date_arr[1] . "-" . $empatt_start_date_arr[0];
         $emp_att_end_date = $emp_att_end_date_arr[2] . "-" . $emp_att_end_date_arr[1] . "-" . $emp_att_end_date_arr[0];
-        return $this->db->query("SELECT * FROM `log_maintenence` WHERE str_to_date(start_date, '%d-%m-%Y')>='$emp_att_start_date'  and str_to_date(start_date, '%d-%m-%Y')<='$emp_att_end_date' ORDER BY str_to_date(start_date, '%d-%m-%Y') DESC ")->result_array();
+      
+        
+        $result = $this->db->query("SELECT * FROM `log_maintenence` WHERE str_to_date(start_date, '%Y-%m-%d')>='$emp_att_start_date'  and str_to_date(start_date, '%Y-%m-%d')<='$emp_att_end_date' ORDER BY str_to_date(start_date, '%Y-%m-%d') DESC ")->result_array();
+        // dd($this->db->last_query());
+        return $result;
     }
     function deleteLoged($id)
     {

@@ -209,10 +209,10 @@
     \n\
     </div>\n\
     <div class="" style="line-height:40px;text-align: center;font-size:20px;color:black;font-weight:bold;text-decoration:underline;"> \n\
-    <span style="padding-left:8px;font-family:Verdana, Geneva, sans-serif">Daily Present Report <br><?php print $nowbigmonth; ?></span>' +
+    <span style="padding-left:8px;font-family:Verdana, Geneva, sans-serif">Daily Attendance Report <br><?php print $nowbigmonth; ?></span>' +
                 '</div>\n\
     </div><br>';
-            popupWin.document.write('<html><head><title>Daily Present Report </title>\n\
+            popupWin.document.write('<html><head><title>Daily Attendance Report </title>\n\
     \n\
     \n\
     \n\

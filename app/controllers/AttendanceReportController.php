@@ -731,6 +731,7 @@ class AttendanceReportController extends CI_Controller
                 $this->session->set_flashdata('errors', validation_errors());
                 $this->load->view('reports/attendance/monthly_attendance_summary_report', $data);
             } else {
+                #dd($this->input->post());
                 $postData = $this->input->post();
                 $data['start_date'] = $postData['emp_attendance_start_date'];
                 $data['end_date'] = $postData['emp_attendance_end_date'];
@@ -738,18 +739,25 @@ class AttendanceReportController extends CI_Controller
                 $data['nowbigmonth'] = date_format($datee, 'F Y');
                 $empCompany = $postData['emp_division'];
                 $empDivision = $postData['emp_department'];
+                $additionalWhere = "";
+                $data['division_name'] = 'All Branch';                
+                if(!empty($empDivision) || ($empDivision != NULL)){
+                    $additionalWhere = " AND SFE.emp_department=$empDivision ";
+                    $divisionName = $this->db->query("SELECT name as divisionName FROM taxonomy WHERE tid=$empDivision")->row('divisionName');
+                    $data['division_name'] = $divisionName;
+                }
                 $employees = $this->db->query("SELECT 
                 SFE.*,T.name as Designation 
                 FROM search_field_emp SFE 
                 LEFT JOIN taxonomy T ON T.tid=SFE.emp_post_id 
-                WHERE SFE.emp_division=$empCompany AND 
-                SFE.emp_department=$empDivision 
-                ORDER BY ABS(SFE.grade)/*CAST(SFE.grade as unsigned)*/ ASC")->result();
+                WHERE SFE.emp_division=$empCompany  
+                $additionalWhere
+                ORDER BY ABS(SFE.grade) ASC")->result();
                 $data['date_range'] = dateRange($data['start_date'], $data['end_date']);
                 $companyName = $this->db->query("SELECT name as companyName FROM taxonomy WHERE tid=$empCompany")->row('companyName');
-                $divisionName = $this->db->query("SELECT name as divisionName FROM taxonomy WHERE tid=$empDivision")->row('divisionName');
+                
                 $data['company_name'] = $companyName;
-                $data['division_name'] = $divisionName;
+                #dd($employees);
                 foreach ($employees as $empVal) :
                     $typeOfEmployee = $empVal->type_of_employee;
                     // If employee join after attendance end date please skip this employee ----                       
@@ -770,6 +778,7 @@ class AttendanceReportController extends CI_Controller
                         }
                     }
                     $totalPresent =
+                        $totalLateNEarly =
                         $totalLate =
                         $totalEarly =
                         $totalLeave =
@@ -792,6 +801,17 @@ class AttendanceReportController extends CI_Controller
                         switch ($attResult['status']) {
                             case 'P':
                                 $totalPresent++;
+                                break;
+                            case 'L.E':
+                                $totalLateNEarly++;
+                                $totalLate++;
+                                $totalEarly++;
+                                break;
+                            case 'L':
+                                $totalLate++;
+                                break;
+                            case 'E':
+                                $totalEarly++;
                                 break;
                             case 'A':
                                 $totalAbsent++;
@@ -823,6 +843,7 @@ class AttendanceReportController extends CI_Controller
                         'total_absent' => $totalAbsent,
                         'total_holiday' => $totalHoliday,
                         'total_leave' => $totalLeave,
+                        'total_late_n_ealy' => $totalLateNEarly,
                         'total_late' => $totalLate,
                         'total_early' => $totalEarly,
                         'total_daily_movement' => $totalDailyMovement,
@@ -1079,13 +1100,17 @@ class AttendanceReportController extends CI_Controller
         #dd($this->db->last_query());
         $dayName = strtolower(date('D', strtotime($attendance_date)));
         $dayOff = $dayName . '_off';
+       
         if ($weeklyHoliday && $weeklyHoliday->$dayOff === 'off' && $logWeeklyHoliDay != 'working_day') {
             $remarks = 'Weekly Holiday';
             $result['status'] = 'W.H';
             $result['remarks'] = $remarks;
             return $result;
         }
-
+        if($attendance_date=='06-01-2023'){
+            // dd($attendance_date,1);
+            // dd($weeklyHoliday);
+        }
         $getAttendance = $this->db->query("SELECT * FROM emp_attendance WHERE content_id=$content_id AND STR_TO_DATE(attendance_date,'%d-%m-%Y') = STR_TO_DATE('$attendance_date','%d-%m-%Y')")->row();
         #dd($this->db->last_query());
         if ($getAttendance) {

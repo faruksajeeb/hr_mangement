@@ -357,7 +357,10 @@ class Search_field_emp_model extends CI_Model {
             $user_id = $this->session->userdata('user_id');
             $search_query = "SELECT * FROM search_query "
                     . " WHERE user_id='$user_id' AND search_page='$searchpage' order by id DESC limit 1";
-            return $this->db->query($search_query)->row_array();
+                    
+            $res = $this->db->query($search_query)->row_array();
+            
+            return $res;
         }
     }
 
