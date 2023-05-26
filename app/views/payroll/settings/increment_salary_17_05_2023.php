@@ -24,7 +24,7 @@
                     </div>
                     <div class="form-group col-md-12">
                         <label>Increment Amount (New Basic - Old Basic)*</label>
-                        <input readonly class="form-control increment_amount" type="number" name="increment_amount" id="increment_amount" value="" placeholder="" required>
+                        <input class="form-control increment_amount" type="number" name="increment_amount" id="increment_amount" value="" placeholder="Please enter increment amount (basic)" required>
                     </div>
                     <div class="form-group col-md-12">
                         <label>Increment Percentage (Based on gross salary) *</label>
@@ -41,7 +41,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="staff">Staff Name *:</label>
-                                <input type="hidden" name="edit_content_id" id="increment_content_id" value="<?php echo $view_data->content_id; ?>">
+                                <input type="hidden" name="edit_content_id" id="edit_content_id" value="<?php echo $view_data->content_id; ?>">
                                 <select disabled name="content_id" id="content_id" data-placeholder="Choose a staff..." class="chosen-select">
                                     <option value="">Choose a staff...</option>
                                     <?php foreach ($active_employees as $key => $empVal) : ?>
@@ -55,12 +55,12 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="staff">Salary Grade *:</label>
-                                <select name="grade_id" id="increment_grade_id" data-placeholder="Choose a staff..." class="chosen-select grade_id">
+                                <select name="grade_id" id="grade_id" data-placeholder="Choose a staff..." class="chosen-select grade_id">
                                     <option value="">Choose a salary grade...</option>
                                     <?php foreach ($salary_grades as $key => $gradeVal) : ?>
                                         <option value="<?php echo $gradeVal->id; ?>" <?php if (isset($view_data) && ($view_data->grade_id == $gradeVal->id)) {
                                                                                             echo "selected='selected'";
-                                                                                        } ?>><?php echo $gradeVal->grade_name .' ('.$gradeVal->description.')'; ?></option>
+                                                                                        } ?>><?php echo $gradeVal->grade_name; ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
@@ -123,7 +123,7 @@
                                     <td><input readonly class="form-control previous_salary_allowance_head" value="<?php if(isset($view_data->{$earnHead->short_name})){ 
                                             echo $view_data->{$earnHead->short_name};                                        
                                         }else{echo set_value($earnHead->short_name);} ?>" type="text" name="previous_<?php echo $earnHead->short_name; ?>" id="previous_<?php echo $earnHead->short_name; ?>"></td>
-                                    <td><input readonly class="form-control increment_salary_allowance_head" type="text" name="<?php echo $earnHead->short_name; ?>" id="increment_<?php echo $earnHead->short_name; ?>" value="0"></td>
+                                    <td><input readonly class="form-control salary_allowance_head" value="<?php echo set_value($earnHead->short_name) ?>" type="text" name="<?php echo $earnHead->short_name; ?>" id="<?php echo $earnHead->short_name; ?>"></td>
                                 </tr>
                             <?php endforeach; ?>
                         </table>
@@ -146,7 +146,7 @@
                                     <td><input readonly class="form-control previous_salary_deduction_head" type="text" name="previous_<?php echo $deductHead->short_name; ?>" id="previous_<?php echo $deductHead->short_name; ?>" value="<?php if(isset($view_data->{$deductHead->short_name})){ 
                                             echo $view_data->{$deductHead->short_name};                                        
                                         }else{echo set_value($deductHead->short_name);} ?>"></td>
-                                    <td><input class="form-control increment_salary_deduction_head" type="number" name="<?php echo $deductHead->short_name; ?>" id="increment_<?php echo $deductHead->short_name; ?>" value="0"></td>
+                                    <td><input readonly class="form-control salary_deduction_head" type="text" name="<?php echo $deductHead->short_name; ?>" id="<?php echo $deductHead->short_name; ?>"></td>
                                 </tr>
                             <?php endforeach; ?>
                         </table>
@@ -161,11 +161,11 @@
                             <tr>
                                 <td style="text-align:right"><label>Gross Salary *</label></td>
                                 <td><input readonly name="previous_gross_salary" id="previous_gross_salary" class="form-control" type="text" value="<?php if(isset($view_data->gross_salary)){ echo $view_data->gross_salary;}?>"></td>
-                                <td><input readonly name="gross_salary" id="increment_gross_salary" class="form-control" type="text">
+                                <td><input readonly name="gross_salary" id="gross_salary" class="form-control" type="text">
                                 </td>
                                 <td style="text-align:right"><label>Net Salary *</label></td>
-                                <td><input readonly name="previous_net_salary" id="previous_net_salary" class="form-control" type="text" value="<?php if(isset($view_data->net_salary)){ echo $view_data->net_salary;}?>" ></td>
-                                <td><input readonly name="net_salary" id="increment_net_salary" class="form-control" type="text"></td>
+                                <td><input readonly name="previous_net_salary" id="previous_net_salary" class="form-control" type="text" value="<?php if(isset($view_data->net_salary)){ echo $view_data->net_salary;}?>"></td>
+                                <td><input readonly name="net_salary" id="net_salary" class="form-control" type="text"></td>
                             </tr>
                         </table>
                     </fieldset>
@@ -196,7 +196,7 @@
             var previous_basic = $('#previous_basic').val();
             increment_amount = newBasic-previous_basic;
             
-            $('.increment_amount').val(increment_amount.toFixed(2));
+            $('.increment_amount').val(increment_amount);
             incCal(increment_amount);
         });
         
@@ -209,14 +209,14 @@
         function incCal(increment_amount){
             var previous_basic = $('#previous_basic').val();
             var basic = Number(previous_basic) + Number(increment_amount);
-            $('#increment_basic').val(basic);
+            $('#basic').val(basic);
             var previous_gross_salary = $('#previous_gross_salary').val();
             var increment_percentage = increment_amount * 100 / previous_gross_salary;
             $('#increment_percentage').val(increment_percentage.toFixed(2));
             var gross_salary = Number(previous_gross_salary) + Number(increment_amount);
-            $('#increment_gross_salary').val(gross_salary.toFixed(2));
-            var grade_id = $('#increment_grade_id').val();
-            
+            $('#gross_salary').val(gross_salary.toFixed(2));
+            var grade_id = $('#grade_id').val();
+
             if (grade_id) {
                 $.ajax({
                     url: url_prefix + "grade-info-by-id",
@@ -236,7 +236,7 @@
                         if (value.amount_type == 'based_on_other') {
                             text = " (" + value.percentage + " % based on " + value.based_on + ")";
                             $('.txt_' + value.head_short_name).text(text.toLowerCase());
-                            var baseVal = $('#increment_' + value.based_on).val();
+                            var baseVal = $('#' + value.based_on).val();
                             valueAmt = baseVal * value.percentage / 100;
                         } else {
                             valueAmt = value.amount;
@@ -244,15 +244,12 @@
 
                         console.log( value.head_short_name +'=>'+ valueAmt);
                         if (increment_based_on == 'basic' && value.head_short_name == 'basic') {
-                            $('#increment_' + value.head_short_name).val(Number(previous_basic) + Number(increment_amount));
+                            $('#' + value.head_short_name).val(Number(previous_basic) + Number(increment_amount));
                              
                         } else {
-                                $('#increment_' + value.head_short_name).val(valueAmt);                          
+                                $('#' + value.head_short_name).val(valueAmt);                          
                         }
-
-
                     });
-                    
                     $.each(response.salary_grade_deductions, function(key, value) {
                         var text = '';
                         var based_on = '';
@@ -260,34 +257,30 @@
                         if (value.amount_type == 'based_on_other') {
                             text = " (" + value.percentage + " % based on " + value.based_on + ")";
                             $('.txt_' + value.head_short_name).text(text.toLowerCase());
-                            var baseVal = $('#increment_' + value.based_on).val();
+                            var baseVal = $('#' + value.based_on).val();
                             valueAmt = baseVal * value.percentage / 100;
                         } else {
                             valueAmt = value.amount;
                         }
-                        $('#increment_' + value.head_short_name).val(valueAmt);
+                        $('#' + value.head_short_name).val(valueAmt);
                     });
                     /*
                     
                     */
                     var previous_mba = $('#previous_mba').val();
                     var previous_td = $('#previous_td').val();
-                    var mba = $('#increment_mba').val();
-                    var td = $('#increment_td').val();
+                    var mba = $('#mba').val();
+                    var td = $('#td').val();
                     if(previous_mba>mba || mba==0){
-                        $('#increment_mba').val(previous_mba);
+                        $('#mba').val(previous_mba);
                     }
                     if(previous_td>td || td==0){
-                        $('#increment_td').val(previous_td);
+                        $('#td').val(previous_td);
                     }
-                    
                     totalCal();
                 });
             }
         }
-        // $('.increment_salary_deduction_head').on('keyup', function() {
-        //     totalCal();
-        // });
         $('.increment_percentage').on('keyup', function() {
             var increment_percentage = $(this).val();
             //console.log(increment_amount);
@@ -295,11 +288,11 @@
             var increment_amount = increment_percentage * previous_gross_salary / 100;
             $('#increment_amount').val(increment_amount.toFixed(2));
             var gross_salary = Number(previous_gross_salary) + Number(increment_amount);
-            $('#increment_gross_salary').val(gross_salary.toFixed(2));
+            $('#gross_salary').val(gross_salary.toFixed(2));
         });
         $('.grade_id').on('change', function() {
-            $('.increment_salary_allowance_head').val(0);
-            $('.increment_salary_deduction_head').val(0);
+            $('.salary_allowance_head').val(0);
+            $('.salary_deduction_head').val(0);
             $('.txt_percentage_label').text('');
             var previous_basic = $('#previous_basic').val();
             var grade_id = $(this).val();
@@ -332,8 +325,8 @@
                             gradeBasicAmt=valueAmt;
                         }
                         if(gradeBasicAmt>0){
-                           // $('#previous_' + value.head_short_name).val(valueAmt);
-                            $('#increment_' + value.head_short_name).val(valueAmt);
+                            $('#previous_' + value.head_short_name).val(valueAmt);
+                            $('#' + value.head_short_name).val(valueAmt);
                         }
                         
 
@@ -351,21 +344,21 @@
                             valueAmt = value.amount;
                         }
                         if(valueAmt>0){
-                            //$('#previous_' + value.head_short_name).val(valueAmt);
-                            $('#increment_' + value.head_short_name).val(valueAmt);
+                            $('#previous_' + value.head_short_name).val(valueAmt);
+                            $('#' + value.head_short_name).val(valueAmt);
                         }
                     });
                     totalCal();
                 });
             }
         });
-        $('.increment_salary_allowance_head').each(function() {
+        $('.salary_allowance_head').each(function() {
             var headVal = $(this).attr('id');
             $('#' + headVal).keyup(function() {
                 totalCal();
             });
         });
-        $('.increment_salary_deduction_head').each(function() {
+        $('.salary_deduction_head').each(function() {
             var headVal = $(this).attr('id');
             $('#' + headVal).keyup(function() {
                 totalCal();
@@ -373,10 +366,10 @@
         });
 
         $('.submit-btn').on('click', function() {
-            var content_id = $('#increment_content_id').val();
-            var grade_id = $('#increment_grade_id').val();
-            var gross_salary = $('#increment_gross_salary').val();
-            var net_salary = $('#increment_net_salary').val();
+            var content_id = $('#edit_content_id').val();
+            var grade_id = $('#grade_id').val();
+            var gross_salary = $('#gross_salary').val();
+            var net_salary = $('#net_salary').val();
             if (!content_id || !grade_id || !gross_salary || !net_salary) {
                 alert('Please fill out the all required fields which contains (*) sign.');
                 return false;
@@ -384,11 +377,10 @@
         });
 
         function totalCal() {
-           
             var previous_salary_allowance_head_total = 0;
             var previous_salary_deduction_head_total = 0;
-            var increment_salary_allowance_head_total = 0;
-            var increment_salary_deduction_head_total = 0;
+            var salary_allowance_head_total = 0;
+            var salary_deduction_head_total = 0;
             var previous_pf_contribution=0;
             var pf_contribution=0;
             $('.previous_salary_allowance_head').each(function() {
@@ -400,31 +392,30 @@
                 var headVal = $(this).val();
                 previous_salary_deduction_head_total += Number(headVal);
             });
-            $('.increment_salary_allowance_head').each(function() {
+            $('.salary_allowance_head').each(function() {
                 var headVal = $(this).val();
-                increment_salary_allowance_head_total += Number(headVal);
+                salary_allowance_head_total += Number(headVal);
             });
 
-            $('.increment_salary_deduction_head').each(function() {
+            $('.salary_deduction_head').each(function() {
                 var headVal = $(this).val();
-                increment_salary_deduction_head_total += Number(headVal);
+                salary_deduction_head_total += Number(headVal);
             });
-           
-            pf_contribution = $('#increment_pf').val();
+
+            pf_contribution = $('#pf').val();
             previous_pf_contribution = $('#previous_pf').val();
            
             var previous_gross_salary = Number(previous_salary_allowance_head_total)+Number(previous_pf_contribution);
-          
-            $('#previous_gross_salary').val(Math.round(previous_gross_salary));
-           
-            var gross_salary = Number(increment_salary_allowance_head_total)+Number(pf_contribution);
-            $('#increment_gross_salary').val(Math.round(gross_salary));
-          
+            
+            $('#previous_gross_salary').val(previous_gross_salary.toFixed(2));
+
+            var gross_salary = Number(salary_allowance_head_total)+Number(pf_contribution);
+            $('#gross_salary').val(gross_salary.toFixed(2));
+
             var previous_net_salary = previous_salary_allowance_head_total - previous_salary_deduction_head_total
-            var net_salary = increment_salary_allowance_head_total - increment_salary_deduction_head_total
-          
-            $('#increment_net_salary').val(Math.round(net_salary));
-            $('#previous_net_salary').val(Math.round(previous_net_salary));
+            var net_salary = salary_allowance_head_total - salary_deduction_head_total
+            $('#net_salary').val(net_salary.toFixed(2));
+            $('#previous_net_salary').val(previous_net_salary.toFixed(2));
         }
     });
 </script>

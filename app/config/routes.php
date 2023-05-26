@@ -198,21 +198,26 @@ $route['single-payslip-generation'] = 'payroll/singlePaySlipGeneratorManual';
 $route['division-pay-slip-generation'] = 'payroll/divisionPaySlipGenerator';
 $route['division-pay-slip-generation-manual'] = 'payroll/divisionPaySlipGeneratorManual';
 $route['get_payslip_info_by_id/(:any)'] = 'payroll/getPayslipInfoById/$1';
+
 # Payslip Confirmation
 $route['pay-slip-confirmation'] = 'payroll/confirmPayslip';
 $route['pay-slip-confirmation/(:any)'] = 'payroll/confirmPayslip/$1';
+
 # Payslip Check
 $route['pay-slip-check'] = 'payroll/checkPayslip';
 $route['pay-slip-check/(:any)'] = 'payroll/checkPayslip/$1';
 $route['pay-slip-check/(:any)/(:any)'] = 'payroll/checkPayslip/$1/$1';
 $route['pay-slip-check/(:any)/(:any)/(:any)/(:any)'] = 'payroll/checkPayslip/$1/$1/$1/$1';
+
 # Payslip Approve
 $route['pay-slip-approval'] = 'payroll/approvePayslip';
 $route['pay-slip-approval/(:any)'] = 'payroll/approvePayslip/$1';
 $route['pay-slip-approval/(:any)/(:any)'] = 'payroll/approvePayslip/$1/$1';
 $route['pay-slip-approval/(:any)/(:any)/(:any)/(:any)'] = 'payroll/approvePayslip/$1/$1/$1/$1';
+
 # Payslip Delete
 $route['pay-slip-delete/(:any)'] = 'payroll/deletePayslip/$1';
+
 # Payslip Payment
 $route['pay-slip-payment'] = 'payroll/paymentPayslip';
 $route['pay-slip/(:any)'] = 'payroll/paySlip/$1';
@@ -287,7 +292,10 @@ $route['get-employee-info-by-id/(:any)'] = 'PerformanceController/getEmployeeInf
 
 
 ### Report ---
+# Employee
+$route['yearly-employee-count'] = 'Report/EmployeeReportController/yearlyEmployeeCount';
 // Stock report--
+
 $route['out-of-stock'] = 'StoreReportController/outOfStock';
 $route['available-stock'] = 'StoreReportController/availableStock';
 $route['all-stock'] = 'StoreReportController/allStock';
@@ -341,6 +349,9 @@ $route['incentive-statement'] = 'Report/PayrollReportController/incentiveStateme
 $route['festival-bonus-statement'] = 'Report/PayrollReportController/festivalBonusStatement';
 $route['performance-bonus-statement'] = 'Report/PayrollReportController/performanceBonusStatement';
 $route['special-bonus-statement'] = 'Report/PayrollReportController/specialBonusStatement';
+
+# Tax Calculator
+$route['tax-calculation'] = 'Report/TaxReportController/taxCalculation';
 
 // api ---
 $route['get-employee-info-by-content-id/(:any)'] = 'Api/getEmployeeInfoByContentId/$1';

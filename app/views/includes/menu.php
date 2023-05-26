@@ -535,6 +535,7 @@ $viewDailyMovement = $this->users_model->getuserwisepermission("view_daily_movem
                     </ul>
                   </li>
                   <li><a href="<?php echo base_url() ?>salary-certificate">Salary Certificate</a></li>
+                  <li><a href="<?php echo base_url() ?>tax-calculation">Tax Calculator</a></li>
                   <li><a href="#">Loan <span class="pull-right glyphicon glyphicon-menu-right"></span></a>
                     <ul>
                       <li><a href="<?php echo base_url() ?>employee-loan-report">Loan Statement (Employee Wise )</a></li>
@@ -634,10 +635,11 @@ $viewDailyMovement = $this->users_model->getuserwisepermission("view_daily_movem
                   </li>
                 <?php } ?>
                 <?php if ($user_type == 1 || $view_job_history['status'] == 1 || $view_resume['status'] == 1) { ?>
-                  <li><a href="#">Job <span class="pull-right glyphicon glyphicon-menu-right"></span></a>
+                  <li><a href="#">Employee <span class="pull-right glyphicon glyphicon-menu-right"></span></a>
                     <ul>
                       <?php if ($user_type == 1 || $view_job_history['status'] == 1) { ?>
-                        <li><a href="<?php echo site_url('posthistory/jobhistorysingle'); ?>">Job History</a></li>
+                        <li><a href="<?php echo site_url('posthistory/jobhistorysingle'); ?>">Employee Job History</a></li>
+                        <li><a href="<?php echo site_url('yearly-employee-count'); ?>">Yearly Employee Count</a></li>
                         <!-- <li><a href="<?php echo site_url('salary/salaryhistorymultiple'); ?>">Salary History Multiple</a></li>           -->
                       <?php } ?>
                       <?php if ($user_type == 1 || $view_resume['status'] == 1) { ?>
