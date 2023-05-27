@@ -6,6 +6,8 @@ require 'vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use \PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 
 class TaxReportController extends CI_Controller
 {
@@ -58,30 +60,92 @@ class TaxReportController extends CI_Controller
             // $activeWorksheet->setCellValue('A1', 'Hello World !');
             $employees = $this->search_field_emp_model->getAllEmployees();
             // dd($employees);
-            foreach($employees as $key=>$employee){
-                if($key>3){
+            foreach ($employees as $key => $employee) {
+                if ($key > 3) {
                     break;
                 }
                 // dd($employee['emp_name']);
                 // $spreadsheet->createSheet();
-                $empName = substr(($key+1).'-'.$employee['emp_name'],0,25);          
+                $empName = substr(($key + 1) . '-' . $employee['emp_name'], 0, 25);
                 // Create a new worksheet called "My Data"
                 $myWorkSheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $empName);
-               
-        
+
+
                 // $myWorkSheet->getStyle('D' . $row)->applyFromArray($styleArray);
                 $myWorkSheet->mergeCells('A2:H2');
                 $myWorkSheet->mergeCells('A3:H3');
                 $myWorkSheet->mergeCells('A4:H4');
-                
-        
-                
-                
+
                 $myWorkSheet->setCellValue('A2', $employee['emp_name']);
                 $myWorkSheet->setCellValue('A3', 'Computation of Total Income and Tax Liability');
-                $myWorkSheet->setCellValue('A4', 'for the Income Year 2021-2022');
+                $myWorkSheet->setCellValue('A4', 'for the Income Year ' . $this->input->post('finacial_year'));
 
-                
+                $myWorkSheet->setCellValue('A6', 'SL');
+                $myWorkSheet->setCellValue('C6', 'Particulars');
+                $myWorkSheet->setCellValue('E6', 'Rate');
+                $myWorkSheet->setCellValue('F6', 'Month');
+                $myWorkSheet->setCellValue('H6', 'Amount in Taka');
+
+                $myWorkSheet->setCellValue('A8',  "`1.00");
+                $myWorkSheet->setCellValue('A13', "`2.00");
+                $myWorkSheet->setCellValue('A18', "`3.00");
+                $myWorkSheet->setCellValue('A23', "`4.00");
+                $myWorkSheet->setCellValue('A28', "`5.00");
+                $myWorkSheet->setCellValue('A31', "`6.00");
+                $myWorkSheet->setCellValue('A35', "`7.00");
+                $myWorkSheet->setCellValue('A39', "`8.00");
+
+                $myWorkSheet->setCellValue('C8', 'Basic');
+                $myWorkSheet->setCellValue('C10', 'Total Basic');
+                $myWorkSheet->setCellValue('C13', 'Conveyance Allowance');
+                $myWorkSheet->setCellValue('C15', 'Total Conveyance');
+                $myWorkSheet->setCellValue('C16', 'Less: Exemption');
+                $myWorkSheet->setCellValue('C18', 'House Rent Allownce');
+                $myWorkSheet->setCellValue('C20', 'Total');
+                $myWorkSheet->setCellValue('C21', 'Less: Examption');
+                $myWorkSheet->setCellValue('C23', 'Medical Allowance');
+                $myWorkSheet->setCellValue('C26', 'Less: Examption');
+                $myWorkSheet->setCellValue('C28', 'PF Contribution');
+                $myWorkSheet->setCellValue('C31', 'Leave Fare  Assistance');
+                $myWorkSheet->setCellValue('C32', 'Less: Examption');
+                $myWorkSheet->setCellValue('C35', 'Festival Bonus');
+                $myWorkSheet->setCellValue('C39', 'Leave encashment');
+                $myWorkSheet->setCellValue('C40', 'Incentive');
+
+                $myWorkSheet->setCellValue('C41', 'Total Income');
+
+                $myWorkSheet->setCellValue('B43', 'Slab');
+                $myWorkSheet->setCellValue('C43', 'Tax Calculation');
+                $myWorkSheet->setCellValue('E43', 'Tax Rate(%)');
+                $myWorkSheet->setCellValue('H43', 'Taka');
+
+                $myWorkSheet->setCellValue('A44', 'Ist');
+                $myWorkSheet->setCellValue('A45', 'Next');
+                $myWorkSheet->setCellValue('A46', 'Next');
+                $myWorkSheet->setCellValue('A47', 'Next');
+                $myWorkSheet->setCellValue('A48', 'Next');
+                $myWorkSheet->setCellValue('A49', 'Balance');
+
+                $myWorkSheet->setCellValue('B44', '350,000');
+                $myWorkSheet->setCellValue('B45', '100,000');
+                $myWorkSheet->setCellValue('B46', '300,000');
+                $myWorkSheet->setCellValue('B47', '400,000');
+                $myWorkSheet->setCellValue('B48', '500,000');
+
+                $myWorkSheet->setCellValue('A52', 'Calculation of Investment Allowance :');
+                $myWorkSheet->setCellValue('A53', 'Actual Investment');
+                $myWorkSheet->setCellValue('A54', '20% of total income');
+                $myWorkSheet->setCellValue('A55', 'Maximum limit ');
+                $myWorkSheet->setCellValue('A56', '( Actual Income or 20% of total income or maximum 15,000,000 Tk. Which ever is lower)');
+                $myWorkSheet->setCellValue('A57', 'Additional investment required');
+
+                $myWorkSheet->setCellValue('A60', 'Tax liability on total income');
+                $myWorkSheet->setCellValue('A61', 'Less: Investment Allowance');
+                $myWorkSheet->setCellValue('A62', 'Tax Liability');
+                $myWorkSheet->setCellValue('A63', 'Minimum Tax');
+                $myWorkSheet->setCellValue('A64', 'Tax already deducted');
+                $myWorkSheet->setCellValue('A65', 'Net tax due/ (Excess)');
+
                 // Attach the getActiveSheet()->"My Data" worksheet as the first worksheet in the Spreadsheet object
                 $spreadsheet->addSheet($myWorkSheet, $key);
 
@@ -94,6 +158,8 @@ class TaxReportController extends CI_Controller
                     ],
                 ];
                 $spreadsheet->setActiveSheetIndex($key);
+                $spreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(TRUE);
+                $spreadsheet->getActiveSheet()->getColumnDimension('H')->setAutoSize(TRUE);
                 $spreadsheet->getActiveSheet()->getStyle('A2')->applyFromArray($styleArray);
                 $spreadsheet->getActiveSheet()->getStyle('A3')->applyFromArray(['alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_CENTER,
@@ -101,6 +167,41 @@ class TaxReportController extends CI_Controller
                 $spreadsheet->getActiveSheet()->getStyle('A4')->applyFromArray(['alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_CENTER,
                 ]]);
+                $spreadsheet->getActiveSheet()->getStyle('A6')->applyFromArray(['font' => ['bold' => true,]]);
+                $spreadsheet->getActiveSheet()->getStyle('C6')->applyFromArray(['font' => ['bold' => true,]]);
+                $spreadsheet->getActiveSheet()->getStyle('E6')->applyFromArray(['font' => ['bold' => true,]]);
+                $spreadsheet->getActiveSheet()->getStyle('F6')->applyFromArray(['font' => ['bold' => true,]]);
+                $spreadsheet->getActiveSheet()->getStyle('H6')->applyFromArray(['font' => ['bold' => true,]]);
+
+                $spreadsheet->getActiveSheet()->getStyle('B43')->applyFromArray(['font' => ['bold' => true,]]);
+                $spreadsheet->getActiveSheet()->getStyle('C43')->applyFromArray(['font' => ['bold' => true,]]);
+                $spreadsheet->getActiveSheet()->getStyle('E43')->applyFromArray(['font' => ['bold' => true,]]);
+                $spreadsheet->getActiveSheet()->getStyle('H43')->applyFromArray(['font' => ['bold' => true,]]);
+
+                $spreadsheet->getActiveSheet()->getStyle('A52')->applyFromArray(['font' => ['bold' => true,]]);
+                $spreadsheet->getActiveSheet()->getStyle('A53')->applyFromArray(['font' => ['bold' => true,]]);
+                $spreadsheet->getActiveSheet()->getStyle('A7:A42')->applyFromArray(['font' => ['bold' => true,]]);
+
+                $styleArray = array(
+                    'borders' => array(
+                        'outline' => array(
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => array('argb' => '000000'),
+                        ),
+                    ),
+                );
+                $spreadsheet->getActiveSheet()->getStyle('A2:H67')->applyFromArray($styleArray);
+                $spreadsheet->getActiveSheet()->getStyle('A6')->applyFromArray($styleArray);
+                $spreadsheet->getActiveSheet()->getStyle('B6:D6')->applyFromArray($styleArray);
+                $spreadsheet->getActiveSheet()->getStyle('E6')->applyFromArray($styleArray);
+                $spreadsheet->getActiveSheet()->getStyle('F6')->applyFromArray($styleArray);
+                $spreadsheet->getActiveSheet()->getStyle('G6')->applyFromArray($styleArray);
+                $spreadsheet->getActiveSheet()->getStyle('H6')->applyFromArray($styleArray);
+                $spreadsheet->getActiveSheet()->getStyle('A7:A42')->applyFromArray($styleArray);
+                $spreadsheet->getActiveSheet()->getStyle('E7:E42')->applyFromArray($styleArray);
+                $spreadsheet->getActiveSheet()->getStyle('F7:F42')->applyFromArray($styleArray);
+                $spreadsheet->getActiveSheet()->getStyle('G7:G42')->applyFromArray($styleArray);
+                $spreadsheet->getActiveSheet()->getStyle('A43:H43')->applyFromArray($styleArray);
             }
 
             $spreadsheet->setActiveSheetIndex(0);
