@@ -11,6 +11,97 @@
     date_default_timezone_set('Asia/Dhaka');
     $servertime = time();
     $today_date = date("d-m-Y", $servertime);
+    function numberToWords($number)
+    {
+        $ones = array(
+            0 => 'zero',
+            1 => 'one',
+            2 => 'two',
+            3 => 'three',
+            4 => 'four',
+            5 => 'five',
+            6 => 'six',
+            7 => 'seven',
+            8 => 'eight',
+            9 => 'nine',
+            10 => 'ten',
+            11 => 'eleven',
+            12 => 'twelve',
+            13 => 'thirteen',
+            14 => 'fourteen',
+            15 => 'fifteen',
+            16 => 'sixteen',
+            17 => 'seventeen',
+            18 => 'eighteen',
+            19 => 'nineteen'
+        );
+
+        $tens = array(
+            2 => 'twenty',
+            3 => 'thirty',
+            4 => 'forty',
+            5 => 'fifty',
+            6 => 'sixty',
+            7 => 'seventy',
+            8 => 'eighty',
+            9 => 'ninety'
+        );
+
+        $words = '';
+
+        if ($number < 0) {
+            $words = 'minus ';
+            $number = abs($number);
+        }
+
+        if ($number < 20) {
+            $words .= $ones[$number];
+        } elseif ($number < 100) {
+            $words .= $tens[floor($number / 10)];
+            $remainder = $number % 10;
+            if ($remainder) {
+                $words .= ' ' . $ones[$remainder];
+            }
+        } elseif ($number < 1000) {
+            $words .= $ones[floor($number / 100)] . ' hundred';
+            $remainder = $number % 100;
+            if ($remainder) {
+                $words .= ' ' . numberToWords($remainder);
+            }
+        } elseif ($number < 100000) {
+            $words .= numberToWords(floor($number / 1000)) . ' thousand';
+            $remainder = $number % 1000;
+            if ($remainder) {
+                $words .= ' ' . numberToWords($remainder);
+            }
+        } elseif ($number < 1000000) {
+            $words .= numberToWords(floor($number / 100000)) . ' lac';
+            $remainder = $number % 100000;
+            if ($remainder) {
+                $words .= ' ' . numberToWords($remainder);
+            }
+        } elseif ($number < 10000000) {
+            $words .= numberToWords(floor($number / 1000000)) . ' million';
+            $remainder = $number % 1000000;
+            if ($remainder) {
+                $words .= ' ' . numberToWords($remainder);
+            }
+        } elseif ($number < 100000000) {
+            $words .= numberToWords(floor($number / 10000000)) . ' crore';
+            $remainder = $number % 10000000;
+            if ($remainder) {
+                $words .= ' ' . numberToWords($remainder);
+            }
+        } else {
+            $words .= numberToWords(floor($number / 1000000000)) . ' billion';
+            $remainder = $number % 1000000000;
+            if ($remainder) {
+                $words .= ' ' . numberToWords($remainder);
+            }
+        }
+
+        return $words;
+    }
 
     function convert_number_to_words($number)
     {
@@ -50,7 +141,9 @@
             90 => 'ninety',
             100 => 'hundred',
             1000 => 'thousand',
+            100000 => 'lac',
             1000000 => 'million',
+            10000000 => 'core',
             1000000000 => 'billion',
             1000000000000 => 'trillion',
             1000000000000000 => 'quadrillion',
@@ -368,7 +461,7 @@
 
         #example td,
         th {
-            padding: 0.10em 0.80em 0.20em 0.80em;
+            padding: .75em .75em .75em .75em;
             text-align: center;
         }
 
@@ -379,7 +472,7 @@
     <style type="text/css" media="print">
         @page {
             size: auto;
-            margin-top: 1.75in;
+            margin-top: 0.75in;
             margin-bottom: 1.5in;
         }
 
@@ -407,55 +500,45 @@
             $first_day_this_month = date('01-m-Y'); // hard-coded '01' for first day
             $last_day_this_month = date('t-m-Y');
             ?>
-            <!--
-                <div class="row" style="font-weight:normal">
-                    <div class="col-md-10" style="width:595px;">
-                        <h1 style="font-size:25px;font-weight:bold"><?php echo $company; ?></h1>
-                        <p>House #25, Road #34, Gulshan-2, Dhaka-1212</p>
-                        <p>Telephone: +8802-8812396, 9880916, 9881424, 8818561, 9892111</p>
-                        <p>Fax: +8802-8826439, 9880918</p>
+
+
+
+            <div class="wrapper">
+                <div class="row" style="font-weight:normal;">
+                    <div class="col-md-3" style="width:20%;float: left">
+                        <img src="<?php echo base_url(); ?>resources/images/logo2.png" alt="" id="logo-img" style="width:70px;height:70px"/>
                     </div>
-                    <div class="col-md-2" style="width:100px;"> <img src="<?php echo base_url(); ?>resources/images/logo.png" alt="" id="logo-img"/></div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <p>E-mail : info@ahmedamin.com,ahmedamingroup@gmail.com, misaag@ahmedamin.com</p>
+                    <div class="col-md-9" style="width:80%; float: right;padding:20px 0 0 -50px; ">
+                        <h1 style="font-size:15px;font-weight:bold; color:#015d3f">IIDFC Securities Limited</h1>
+                        <p>PFI Tower (3rd Floor), 56-57, Dilkusha C/A, Dhaka-1000<br/>
+                            Bangladesh
+                        </p>
+                        <br />
                     </div>
                 </div>
-                
-                <div class="row under-header-bar text-center"> 
-                    <h1 style="font-size:20px;font-weight:bold">Bank Advice <br>
-                        <span style="font-size:15px;">
-<?php echo $division; ?><br>
-                <?php echo "Salary for the month of " . $month . "' " . $year; ?>
-                        </span>
-                        
-                    </h1>         
-                </div> 
-                -->
-            <div class="wrapper" style="">
+                <br />
+                <br />
                 <div class="row">
-                    Date: <?php echo $nowdate; ?>
+                    <?php echo date('F d, Y',$servertime); ?>
                 </div><br />
                 <div class="row">
                     <address>
-                        <p>To
-                        <p>The Manager</p>
-                        <p><?php echo $bankName; ?></p>
-                        <p><?php echo $bankAddress; ?></p>
-                        <p><br />
-                            <!-- <h3 style="font-weight:bold">Sub: Request for fund transfer as salary and allowances for the month of  <?php echo "" . $month . "' " . $year; ?></h3> -->
-                        <h3 style="font-weight:bold">Subject : Payment of Salary <?php echo "" . $month . "-" . $year; ?> for IIDFC Securities Limited for Permanent and On probation .
+                        <br />
+                        <!-- <h3 style="font-weight:bold">Sub: Request for fund transfer as salary and allowances for the month of  <?php echo "" . $month . "' " . $year; ?></h3> -->
+                        <h3 style="font-weight:bold">Subject : Transfer of Provident Fund for the Month of <?php echo "" . $month . " " . $year; ?>.
                         </h3>
                         </p><br />
-                        <!-- <p>Dear Sir,</p><br/> -->
-                        <?php foreach ($paySlips as $paySlip) {
-                            $amt = $paySlip->net_salary - $paySlip->total_paid;
-                            $totalAmt += $amt;
-                        } ?>
-                        <!-- <p>     Kindly refer to subject mentioned above, please transfer Tk. <?php echo number_format($totalAmt); ?> (<?php echo ucfirst(convert_number_to_words($totalAmt)) . " taka only."; ?>) from account no. <strong><?php echo $bankAccountNo; ?></strong> name: <strong><?php echo $company; ?> </strong> to under mentioned account numbers and account names being maintained with your Bank.</p><br/> -->
-                        <p>We would like to inform you that the company decided to pay the emoluments of the employees by transferring fund to their personal accounts maintained with your bank. With this view, you are advised to make payment of Tk. <?php echo $totalAmt ?> (<?php echo ucfirst(convert_number_to_words($totalAmt)) . " taka only."; ?>) only by transferring the amounts as mentioned against the respective accounts of the employees and debit out STD Account No <strong><?php echo $bankAccountNo; ?></strong> for the same amount.
+                        <p>
+                            Salary and allowances for the month of <?php echo "" . $month . " " . $year; ?> already disbursed to employee's
+                            bank account after deducting employee's contribution to provident fund.
+                            Now it is required to transfer the employee's contribution to provident fund balance
+                            from company account to IIDFC Securities Limited Employee's Provident Fund bank account.
+
+
                         </p><br />
+                        Details are presented below:
+                        <br />
+                        <br />
                 </div>
                 <div>
 
@@ -463,52 +546,53 @@
                 <div class="row">
                     <div class="col-md-12">
 
-                        <table id="example" class="display" cellspacing="0" width="100%">
+                        <table id="example" class="display" cellspacing="0" cellpadding="2" width="100%" border="1">
                             <thead>
-                                <tr class="heading" style="border:2px solid #000;font-size:12px;">
-                                    <th>Sl No</th>
-                                    <!--<th>Employee ID</th>-->
-                                    <th style="text-align:left">Name of Account</th>
-                                    <th>Account No.</th>
-                                    <th>Bank</th>
-                                    <th>Branch</th>
-                                    <th style="text-align:right">Salary Amount</th>
+                                <tr class="" style="border:1px solid #000;font-size:12px;">
+                                    <th>Particulars</th>
+                                    <th>Details</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
-                                $slNo = 1;
-                                foreach ($paySlips as $paySlip) {
-                                ?>
-                                    <tr>
-                                        <td style="border-bottom: 1px solid #ccc"><?php echo $slNo++; ?></td>
-                                        <!--<td style="border-bottom: 1px solid #ccc"><?php echo $paySlip->emp_id; ?></td>-->
-                                        <td style="border-bottom: 1px solid #ccc;text-align:left"><?php echo $paySlip->emp_name; ?></td>
-                                        <td style="border-bottom: 1px solid #ccc"><?php echo $paySlip->bank_account_no; ?></td>
-                                        <td style="border-bottom: 1px solid #ccc"><?php echo $paySlip->bank_name; ?></td>
-                                        <td style="border-bottom: 1px solid #ccc"><?php echo $paySlip->branch_name; ?></td>
-                                        <td style="border-bottom: 1px solid #ccc;text-align:right">
-                                            <?php $amt = $paySlip->net_salary - $paySlip->total_paid;
-                                            echo number_format($amt); ?>
-                                        </td>
-                                    </tr>
-                                <?php
-                                }
-                                ?>
                                 <tr>
-                                    <th colspan="5" style="text-align:left;border-bottom: 1px solid #ccc">Total</th>
-                                    <th style="text-align:right;border-bottom: 1px solid #ccc"><?php echo number_format($totalAmt); ?></th>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">Basic Salary of Permanent Staff</td>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">TK. <?php echo number_format($total_basic, 2); ?></td>
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">Employees' contribution to PF </td>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">TK. <?php echo number_format($employees_contribution, 2); ?></td>
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">Employer's contribution to PF </td>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">TK. <?php echo number_format($employer_contribution, 2); ?></td>
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">Total amount of PF</td>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">TK. <?php echo number_format($total_pf, 2); ?></td>
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">Amount in words</td>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">Taka <?php echo ucfirst(numberToWords($total_pf)) . " only.";
+                                                                                                    ?></td>
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">Mode of transfer</td>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">A/C payee cheque</td>
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">Cheque favoring</td>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">IIDFC Securities Limited Employee's Provident Fund</td>
+                                </tr>
+                                <tr>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">Payee Bank A/C No</td>
+                                    <td style="border-bottom: 1px solid #ccc;text-align:left">Southeast Bank 722</td>
                                 </tr>
                             </tbody>
                         </table>
                         <br />
                         <p>
-                            Kindly make the transfer arrangement as on <?php echo $nowdate; ?>. Look forward to your best co-opration.
+                            Placed for approval please.
                         </p><br /><br /><br />
-                        <p>
-                            Thanking you,
-                        </p>
-
                     </div>
                 </div>
             </div>
@@ -516,31 +600,29 @@
         <!-- /#page-content-wrapper -->
         <htmlpagefooter name="MyFooter1" style="">
             <table width="100%" style="height:200px;vertical-align: bottom; font-family: serif; font-size: 10pt; 
-                       color: #000000; font-weight: bold; font-style: italic;text-align: left; ">
+                       color: #000000; text-align: left; ">
                 <tr style="margin-bottom:10px;">
-                    <!--                        <td width="25%">
-                            <span style="text-align: center; font-weight: bold; font-style: italic;border-bottom:2px solid #000;">
-                                Prepared By:<br><br>
-                            </span>
-                        </td>
-                        <td width="25%" style="text-align: center; ">
+                    <td width="33%">
+                        <span style="text-align: center; font-weight: bold; ">
+                            Sabina Yesmin <br>
+                        </span>
+                        Assistant Manager (HR)
+                    </td>
+                    <td width="33%" style="text-align: center; ">
 
-                            <span style="text-align: center; font-weight: bold; font-style: italic;border-bottom:2px solid #000;">
-                                Checked By:<br><br>
-                            </span>
-                        </td>
-                        <td width="25%" style="text-align: center; ">
+                        <span style="text-align: center; font-weight: bold; ">
+                            Md. Maruf Hossain Khan<br>
+                        </span>
+                        AVP & Head of Accounts
+                    </td>
+                    <td width="33%" style="text-align: center; ">
 
-                            <span style="height:50px;font-weight: bold; font-style: italic;border-bottom:2px solid #000;">
-                                Approved By:<br><br>
-                            </span>
-                        </td>
-                        <td width="25%"  style="text-align: center; font-weight: bold; font-style: italic;">
-                            <span style="font-weight: bold; font-style: italic;border-bottom:2px solid #000;">
-                                Authorized By:<br><br>
-                            </span>
-                        </td>
--->
+                        <span style="height:50px;font-weight: bold; ">
+                            Md. Nazmul Hasan Chowdhury <br>
+                        </span>
+                        Chief Executive Officer (cc)
+                    </td>
+
                 </tr>
                 <!--                                    <tr>
                         <td width="25%"><span style="font-weight: bold; font-style: italic;"><p style="color:fff"></p><br>HR Executive </span></td>

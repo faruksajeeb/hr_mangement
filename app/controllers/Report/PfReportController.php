@@ -91,7 +91,7 @@ class PfReportController extends CI_Controller
                 ],
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_CENTER,
-                ],'borders' => array(
+                ], 'borders' => array(
                     'outline' => array(
                         'borderStyle' => Border::BORDER_THIN,
                         'color' => array('argb' => '000000'),
@@ -104,7 +104,7 @@ class PfReportController extends CI_Controller
                 ],
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_RIGHT,
-                ],'borders' => array(
+                ], 'borders' => array(
                     'outline' => array(
                         'borderStyle' => Border::BORDER_THIN,
                         'color' => array('argb' => '000000'),
@@ -231,7 +231,7 @@ class PfReportController extends CI_Controller
                         $myWorkSheet->setCellValue('J' . $row, number_format($grandgrandTotal));
                         $spreadsheet->getActiveSheet()->getStyle("A$row:J$row")->applyFromArray($styleArrayBoldRight);
                         $spreadsheet->getActiveSheet()->getStyle("A$row:J$row")->applyFromArray($styleBgColor);
-                        
+
                         $row = $row + 1;
                         $myWorkSheet->mergeCells("A$row:I$row");
                         $myWorkSheet->setCellValue('A' . $row, 'Amount to be transferred in PF Account');
@@ -241,24 +241,29 @@ class PfReportController extends CI_Controller
                     }
                 }
             }
-
-            $writer = new Xlsx($spreadsheet);
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment;filename="');
-            header('Cache-Control: max-age=0');
-            ob_end_clean();
-            $writer->save('php://output');
-
-            
-            $this->load->library("pdf");
-            $mPdf = $this->pdf->load();
-            $html = $this->load->view('payroll/report/pf_statement-pdf', $data, true);
-            //this the the PDF filename that user will get to download
-            $pdfFilePath = "pf_statement-of-" . $data['company'] . ".pdf";
-            $mPdf->SetJS('this.print();');
-            $mPdf->WriteHTML(utf8_encode($html));
-            $mPdf->Output($pdfFilePath, "D");
-            
+            if ($this->input->post('export_btn') == 'EXCEL') {
+                $writer = new Xlsx($spreadsheet);
+                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                header('Content-Disposition: attachment;filename="');
+                header('Cache-Control: max-age=0');
+                ob_end_clean();
+                $writer->save('php://output');
+            } elseif ($this->input->post('export_btn') == 'PDF') {
+                $data['year'] = $year;
+                $data['month'] = $monthName;
+                $data['total_basic'] = $grandbasicTotal;
+                $data['employees_contribution'] = $grandpfConTotal;
+                $data['employer_contribution'] = $grandpfSubTotal;
+                $data['total_pf'] = $grandgrandTotal;
+                $this->load->library("pdf");
+                $mPdf = $this->pdf->load();
+                $html = $this->load->view('reports/pf/pf_statement-pdf', $data, true);
+                //this the the PDF filename that user will get to download
+                $pdfFilePath = "pf_statement-of-" . $data['company'] . ".pdf";
+                $mPdf->SetJS('this.print();');
+                $mPdf->WriteHTML(utf8_encode($html));
+                $mPdf->Output($pdfFilePath, "D");
+            }
             die();
         }
         if ($this->all_company_access['status'] == 1 || $this->user_type == 1) {

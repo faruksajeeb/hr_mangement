@@ -188,7 +188,7 @@
                                                             <?php
                                                             // dd($userType);
                                                             if ($userType == 1 || ($all_company_access['status'] == 1)) {
-                                                               
+
                                                                 echo '<option value="">--select company--</option>';
                                                                 foreach ($alldivision as $single_division) {
 
@@ -266,26 +266,15 @@
                                 <hr />
                                 <div class="row">
                                     <div class="col-md-6 col-xs-12 col-sm-12">
-                                        <div class="row">
-                                            <div class="col-md-4"></div>
-                                            <div class="col-md-8">
-
-                                            </div>
-                                        </div>
                                     </div>
-                                    <div class="col-md-6 col-xs-12 col-sm-12">
-                                        <div class="row">
-                                            <div class="col-md-4"></div>
-                                            <div class="col-md-8">
-                                                <input type="submit" name="export_btn" id="export_btn" style="width:100%;" value="SUBMIT" />
-                                            </div>
-                                        </div>
+                                    <div class="col-md-3 col-xs-12 col-sm-12">
+                                        <button type="submit" name="export_btn" class="export_btn_pdf btn btn-danger" style="width:100%;" value="PDF">PDF </button>
+                                    </div>
+                                    <div class="col-md-3 col-xs-12 col-sm-12">
+                                        <button type="submit" name="export_btn" class="export_btn_excel btn btn-success" style="width:100%;" value="EXCEL">EXCEL </button>
                                     </div>
                                 </div>
-
-
-
-                            </div>
+                                <br>
                         </form>
 
                     </div>
