@@ -536,6 +536,7 @@ $viewDailyMovement = $this->users_model->getuserwisepermission("view_daily_movem
                   </li>
                   <li><a href="<?php echo base_url() ?>salary-certificate">Salary Certificate</a></li>
                   <li><a href="<?php echo base_url() ?>tax-calculation">Tax Calculator</a></li>
+                  <li><a href="<?php echo base_url() ?>pf-statement">PF Statement</a></li>
                   <li><a href="#">Loan <span class="pull-right glyphicon glyphicon-menu-right"></span></a>
                     <ul>
                       <li><a href="<?php echo base_url() ?>employee-loan-report">Loan Statement (Employee Wise )</a></li>

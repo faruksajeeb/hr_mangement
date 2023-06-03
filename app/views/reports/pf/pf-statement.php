@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>HRMS- Report | Tax Calculation </title>
+    <title>HRMS- Report | PF Statement </title>
     <!--chosen-->
     <link rel="stylesheet" href="<?php echo base_url(); ?>resources/plugins/chosenSelect/chosen.css">
     <?php
@@ -136,7 +136,7 @@
                         <div class="row add-form-heading">
                             <div class="col-md-12 ">
 
-                                <i class="fas fa-money-check-alt " style="font-size:20px"></i> Tax Calculation
+                                <i class="fas fa-money-check-alt " style="font-size:20px"></i> PF Statement
                             </div>
                         </div>
                         <form id="export" action="" onsubmit=" return validate();" method="POST" enctype="multipart/form-data">
@@ -181,47 +181,85 @@
                                         <div class="row">
                                             <div class="col-md-12 col-xs-12 col-sm-12">
                                                 <div class="row">
-                                                    <div class="col-md-4">Employee name:</div>
+                                                    <div class="col-md-4">Company: </div>
                                                     <div class="col-md-8">
-                                                        <select name='content_id' id='content_id' data-placeholder="Choose an Employee..." class="chosen-select">
-                                                            <option value="">--All--</option>
+                                                        <select name="emp_company" id="emp_company" class="form-control">
+
                                                             <?php
-                                                            foreach ($employees as $employee) {
+                                                            // dd($userType);
+                                                            if ($userType == 1 || ($all_company_access['status'] == 1)) {
+                                                               
+                                                                echo '<option value="">--select company--</option>';
+                                                                foreach ($alldivision as $single_division) {
+
+                                                                    echo '<option value="' . $single_division['tid'] . '" >' . $single_division['name'] . '</option>';
+                                                                }
+                                                            } else {
+                                                                echo '<option value="' . $alldivision['tid'] . '" selected="selected" data-id="' . $alldivision['weight'] . '">' . $alldivision['name'] . '</option>';
+                                                            }
+
+
                                                             ?>
-                                                                <option value="<?php echo $employee['content_id'] ?>"><?php echo $employee['emp_name'] . '-' . $employee['emp_id']; ?></option>
-                                                            <?php } ?>
                                                         </select>
-                                                        [NOTE:For an indivisual employee please select empoyee]
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="row">
                                             <div class="col-md-12 col-xs-12 col-sm-12">
                                                 <div class="row">
-                                                    <div class="col-md-4">Financial Year:</div>
+                                                    <div class="col-md-4">Division:</div>
                                                     <div class="col-md-8">
-                                                       <select name="financial_year" id="financial_year" class="form-select">
-                                                                <option value="2025-2026" <?php echo ((date('Y-m-d') >= date('Y-m-d', strtotime("2025-07-01"))) && (date('Y-m-d') <= date('Y-m-d', strtotime("2026-06-30"))))? 'selected':'';?> >2025-2026</option>
-                                                                <option value="2024-2025" <?php echo ((date('Y-m-d') >= date('Y-m-d', strtotime("2024-07-01"))) && (date('Y-m-d') <= date('Y-m-d', strtotime("2025-06-30"))))? 'selected':'';?> >2024-2025</option>
-                                                                <option value="2023-2024" <?php echo ((date('Y-m-d') >= date('Y-m-d', strtotime("2023-07-01"))) && (date('Y-m-d') <= date('Y-m-d', strtotime("2024-06-30"))))? 'selected':'';?> >2023-2024</option>
-                                                                <option value="2022-2023" <?php echo ((date('Y-m-d') >= date('Y-m-d', strtotime("2022-07-01"))) && (date('Y-m-d') <= date('Y-m-d', strtotime("2023-06-30"))))? 'selected':'';?> >2022-2023</option>
-                                                                <option value="2021-2022" <?php echo ((date('Y-m-d') >= date('Y-m-d', strtotime("2021-07-01"))) && (date('Y-m-d') <= date('Y-m-d', strtotime("2022-06-30"))))? 'selected':'';?> >2021-2022</option>
-                                                                <option value="2020-2021" <?php echo ((date('Y-m-d') >= date('Y-m-d', strtotime("2020-07-01"))) && (date('Y-m-d') <= date('Y-m-d', strtotime("2021-06-30"))))? 'selected':'';?> >2020-2021</option>
-                                                                <option value="2019-2020" <?php echo ((date('Y-m-d') >= date('Y-m-d', strtotime("2019-07-01"))) && (date('Y-m-d') <= date('Y-m-d', strtotime("2020-06-30"))))? 'selected':'';?> >2019-2020</option>
-                                                                <option value="2018-2019" <?php echo ((date('Y-m-d') >= date('Y-m-d', strtotime("2018-07-01"))) && (date('Y-m-d') <= date('Y-m-d', strtotime("2019-06-30"))))? 'selected':'';?> >2018-2019</option>
-                                                                <option value="2017-2018" <?php echo ((date('Y-m-d') >= date('Y-m-d', strtotime("2017-07-01"))) && (date('Y-m-d') <= date('Y-m-d', strtotime("2018-06-30"))))? 'selected':'';?> >2017-2018</option>
-                                                                <option value="2016-2017" <?php echo ((date('Y-m-d') >= date('Y-m-d', strtotime("2016-07-01"))) && (date('Y-m-d') <= date('Y-m-d', strtotime("2017-06-30"))))? 'selected':'';?> >2016-2017</option>
-                                                                <option value="2015-2016" <?php echo ((date('Y-m-d') >= date('Y-m-d', strtotime("2015-07-01"))) && (date('Y-m-d') <= date('Y-m-d', strtotime("2016-06-30"))))? 'selected':'';?> >2015-2016</option>
-                                                                <option value="2014-2015" <?php echo ((date('Y-m-d') >= date('Y-m-d', strtotime("2014-07-01"))) && (date('Y-m-d') <= date('Y-m-d', strtotime("2015-06-30"))))? 'selected':'';?> >2014-2015</option>
-                                                                <option value="2013-2014" <?php echo ((date('Y-m-d') >= date('Y-m-d', strtotime("2013-07-01"))) && (date('Y-m-d') <= date('Y-m-d', strtotime("2014-06-30"))))? 'selected':'';?> >2013-2014</option>
-                                                       </select>
+                                                        <select name="emp_division" id="emp_division" class="form-control">
+                                                            <?php
+                                                            if ($userId == 16 || !$userDepartment) {
+                                                                echo '<option value="">All</option>';
+                                                                foreach ($department_selected as $single_department) {
+                                                                    if ($userDepartment == $single_department['tid']) {
+                                                                        echo '<option value="' . $single_department['tid'] . '" selected="selected">' . $single_department['name'] . '</option>';
+                                                                    } else {
+                                                                        echo '<option value="' . $single_department['tid'] . '">' . $single_department['name'] . '</option>';
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                echo '<option value="' . $department_selected['tid'] . '" selected="selected">' . $department_selected['name'] . '</option>';
+                                                            }
+                                                            ?>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-md-12 col-xs-12 col-sm-12">
+                                                <div class="row">
+                                                    <div class="col-md-4">Year:</div>
+                                                    <div class="col-md-8">
 
+                                                        <select name="year" id="year" class=" form-control" required>
+                                                            <?php foreach ($years as $val) : ?>
+                                                                <option value="<?php echo $val->year; ?>" <?php echo $val->year == date('Y') ? 'selected' : ''; ?>><?php echo $val->year; ?></option>
+                                                            <?php endforeach; ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 col-xs-12 col-sm-12">
+                                                <div class="row">
+                                                    <div class="col-md-4">Month:</div>
+                                                    <div class="col-md-8">
+                                                        <select name="month" id="month" class="form-control" required>
+                                                            <option value=""> --select month-- </option>
+                                                            <?php foreach ($months as $month) { ?>
+                                                                <option value="<?php echo $month->month_id . '-' . $month->month_name; ?>"><?php echo $month->month_name; ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -270,6 +308,39 @@
     <script src="<?php echo base_url(); ?>resources/plugins/chosenSelect/docsupport/init.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript">
         $(function() {
+            $("#loader").hide();
+            var company_id = '11'; // IIDFC Company ID
+            $("select#emp_company").val(company_id).trigger('change');
+            dependableBranch(company_id);
+
+            $("#emp_company").change(function(e) {
+                $("input[type=submit]").removeAttr("disabled");
+                var company_id = $(this).val();
+                dependableBranch(company_id);
+            });
+
+            function dependableBranch(company_id) {
+                if (company_id) {
+                    var base_url = '<?php echo base_url(); ?>';
+                    $.ajax({
+                        type: "POST",
+                        url: "" + base_url + "addprofile/getdepartmentidbydivisionid",
+                        data: {
+                            "division_tid": company_id
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            // console.log(data);
+                            var options = "";
+                            options += '<option value="">All</option>';
+                            $(data).each(function(index, item) {
+                                options += '<option value="' + item.tid + '">' + item.name + '</option>';
+                            });
+                            $('#emp_division').html(options);
+                        }
+                    });
+                }
+            }
             $('.date-picker').datepicker({
                 changeMonth: true,
                 changeYear: true,

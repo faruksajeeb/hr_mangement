@@ -352,6 +352,7 @@ $route['special-bonus-statement'] = 'Report/PayrollReportController/specialBonus
 
 # Tax Calculator
 $route['tax-calculation'] = 'Report/TaxReportController/taxCalculation';
+$route['pf-statement'] = 'Report/PfReportController/pfStatement';
 
 // api ---
 $route['get-employee-info-by-content-id/(:any)'] = 'Api/getEmployeeInfoByContentId/$1';
