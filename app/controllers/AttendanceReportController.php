@@ -21,41 +21,42 @@ class AttendanceReportController extends CI_Controller
         // ini_set('max_execution_time', 30000);
     }
 
-    public function myAttendance(){
+    public function myAttendance()
+    {
         $dateFrom = $this->input->post('date_from');
         //echo $dateFrom;
         $dateTo = $this->input->post('date_to');
-        if($this->input->post()){
-            if($dateFrom && $dateTo){
+        if ($this->input->post()) {
+            if ($dateFrom && $dateTo) {
                 $html = '';
                 $html .= '<table class="table table-sm table-bordered">';
                 $html .= '<thead>';
                 $html .= '<tr>';
-                    $html .= '<th>Attendance Date</th>';
-                    $html .= '<th>In Time</th>';
-                    $html .= '<th>Out Time</th>';
-                    $html .= '<th>Remarks</th>';
-                    $dateRange = dateRange($dateFrom, $dateTo);
-                    $contentId =  $this->session->userdata('content_id');
-                    foreach($dateRange as $date):
-                        if(date('Y-m-d') < date('Y-m-d',strtotime($date)))
+                $html .= '<th>Attendance Date</th>';
+                $html .= '<th>In Time</th>';
+                $html .= '<th>Out Time</th>';
+                $html .= '<th>Remarks</th>';
+                $dateRange = dateRange($dateFrom, $dateTo);
+                $contentId =  $this->session->userdata('content_id');
+                foreach ($dateRange as $date) :
+                    if (date('Y-m-d') < date('Y-m-d', strtotime($date)))
                         continue;
-                        $result = $this->employeeDailyAttendanceStatus($contentId, $date);
-                        $html .= '</tr>';
-                        $html .= '<tr>';
-                        $html .= '<td>'.$date.'</td>';
-                        $html .= '<td>'.$result["login"].'</td>';
-                        $html .= '<td>'.$result["logout"].'</td>';
-                        $html .= '<td>'.$result["remarks"].'</td>';
-                        $html .= '</tr>';
-                    endforeach;
+                    $result = $this->employeeDailyAttendanceStatus($contentId, $date);
+                    $html .= '</tr>';
+                    $html .= '<tr>';
+                    $html .= '<td>' . $date . '</td>';
+                    $html .= '<td>' . $result["login"] . '</td>';
+                    $html .= '<td>' . $result["logout"] . '</td>';
+                    $html .= '<td>' . $result["remarks"] . '</td>';
+                    $html .= '</tr>';
+                endforeach;
                 $html .= '</thead>';
                 $html .= '</table>';
                 echo $html;
                 return false;
             }
         }
-        
+
         $this->load->view('attendance/my_attendance');
     }
 
@@ -603,81 +604,77 @@ class AttendanceReportController extends CI_Controller
             ";
             $html .= '<tbody>';
             $date_range = dateRange($startDate, $endDate);
-            $totalPresent=
-            $totalLeave=
-            $totalLate=
-            $totalEarly=
-            $totalLateEarly=
-            $totalAbsent=
-            $dailyMovement=
-            $attendanceException=0;
-            $totalHours=0;
-            $totalMinutes=0;
+            $totalPresent =
+                $totalLeave =
+                $totalLate =
+                $totalEarly =
+                $totalLateEarly =
+                $totalAbsent =
+                $dailyMovement =
+                $attendanceException = 0;
+            $totalHours = 0;
+            $totalMinutes = 0;
             foreach ($date_range as $date) :
-                if(date('Y-m-d') < date('Y-m-d',strtotime($date)))
+                if (date('Y-m-d') < date('Y-m-d', strtotime($date)))
                     continue;
                 $result = $this->employeeDailyAttendanceStatus($contentId, $date);
                 $status = $result["status"];
-                if($reportType!='attendance'){
-                    if(($reportType=='present') && ($status != 'P')){
+                if ($reportType != 'attendance') {
+                    if (($reportType == 'present') && ($status != 'P')) {
                         continue;
-                    }elseif(($reportType=='absent') && ($status != 'A')){
+                    } elseif (($reportType == 'absent') && ($status != 'A')) {
                         continue;
-                    }elseif(($reportType=='late') && ($status != 'L')){
+                    } elseif (($reportType == 'late') && ($status != 'L')) {
                         continue;
-                    }elseif(($reportType=='early') && ($status != 'E')){
+                    } elseif (($reportType == 'early') && ($status != 'E')) {
                         continue;
-                    }elseif(($reportType=='late_n_early') && ($status != 'L.E')){
+                    } elseif (($reportType == 'late_n_early') && ($status != 'L.E')) {
                         continue;
-                    }elseif(($reportType=='attendance_exception') && ($status != 'A.E')){
+                    } elseif (($reportType == 'attendance_exception') && ($status != 'A.E')) {
                         continue;
                     }
                 }
                 $login = $result['login'];
                 $logout = $result['logout'];
-                $weeklyHolidayColor = ($result["status"]=='W.H')?'background-color:#e6ffe6':'';
-                $bgColor = ($result["status"]=='A')?'background-color:#ffb3b3':(($result["status"]=='L' || $result["status"]=='E' || $result["status"]=='L.E')?'background-color:#ffff1a':'');
-                $fontColor = ($result["status"]=='A' || $result["status"]=='L' || $result["status"]=='E' || $result["status"]=='L.E')?'color:red':'';
-                $workingDuration = $this->timeDiff("$date $login","$date $logout");
+                $weeklyHolidayColor = ($result["status"] == 'W.H') ? 'background-color:#e6ffe6' : '';
+                $bgColor = ($result["status"] == 'A') ? 'background-color:#ffb3b3' : (($result["status"] == 'L' || $result["status"] == 'E' || $result["status"] == 'L.E') ? 'background-color:#ffff1a' : '');
+                $fontColor = ($result["status"] == 'A' || $result["status"] == 'L' || $result["status"] == 'E' || $result["status"] == 'L.E') ? 'color:red' : '';
+                $workingDuration = $this->timeDiff("$date $login", "$date $logout");
                 $totalHours += $workingDuration['hours'];
                 $totalMinutes += $workingDuration['minutes'];
-                $html .= '<tr style="'.$weeklyHolidayColor.'">
+                $html .= '<tr style="' . $weeklyHolidayColor . '">
                 <td>' . date('d-M-Y', strtotime($date)) . '</td>
                 <td>' . $login . '</td>
                 <td>' . $logout . '</td>
-                <td>' . $workingDuration['diff'].'</td>
-                <td style="'.$bgColor.'">' . $result['status'] . '</td>
-                <td style="'.$fontColor.'">' . $result['remarks'] . '</td>
+                <td>' . $workingDuration['diff'] . '</td>
+                <td style="' . $bgColor . '">' . $result['status'] . '</td>
+                <td style="' . $fontColor . '">' . $result['remarks'] . '</td>
             </tr>';
-            if($result['status']=='Y.L'){
-                $totalLeave++;
-            }elseif($result['status']=='A'){
-                $totalAbsent++;
-            }elseif($result['status']=='D.M'){
-                $dailyMovement++;
-            }elseif($result['status']=='A.E'){
-                $attendanceException++;
-            }
-            elseif($result['status']=='P'){
-                $totalPresent++;
-            }
-            elseif($result['status']=='L'){
-                $totalLate++;
-            }
-            elseif($result['status']=='E'){
-                $totalEarly++;
-            }
-            elseif($result['status']=='L.E'){
-                $totalLateEarly++;
-            }
+                if ($result['status'] == 'Y.L') {
+                    $totalLeave++;
+                } elseif ($result['status'] == 'A') {
+                    $totalAbsent++;
+                } elseif ($result['status'] == 'D.M') {
+                    $dailyMovement++;
+                } elseif ($result['status'] == 'A.E') {
+                    $attendanceException++;
+                } elseif ($result['status'] == 'P') {
+                    $totalPresent++;
+                } elseif ($result['status'] == 'L') {
+                    $totalLate++;
+                } elseif ($result['status'] == 'E') {
+                    $totalEarly++;
+                } elseif ($result['status'] == 'L.E') {
+                    $totalLateEarly++;
+                }
             endforeach;
-            $extraHours = floor($totalMinutes/60);
-           // $extraHours =$totalMinutes/60;
+            $extraHours = floor($totalMinutes / 60);
+            // $extraHours =$totalMinutes/60;
             $totalMinutes = $totalMinutes % 60;
             // dd($extraHours);
-            $html .='<tr><td colspan="3"></td><td>Total Working Time: '.($totalHours+$extraHours).':'.$totalMinutes.' hours</td><td colspan="2"></td></tr>';
-            $summary = 'Total Late:'.$totalLate.', Total Early:'.$totalEarly.', Total Late & Early:'.$totalLateEarly.', Total Leave:'.$totalLeave.', Total Absent:'.$totalAbsent.',  Attendance Exception:'.$attendanceException.', Daily Movement:'.$dailyMovement;
-            $html .= '<tfoot><tr style="font-weight:bold"><td colspan="6">'.$summary.'</td></tr></tfoot>';
+            $html .= '<tr><td colspan="3"></td><td>Total Working Time: ' . ($totalHours + $extraHours) . ':' . $totalMinutes . ' hours</td><td colspan="2"></td></tr>';
+            $summary = 'Total Late:' . $totalLate . ', Total Early:' . $totalEarly . ', Total Late & Early:' . $totalLateEarly . ', Total Leave:' . $totalLeave . ', Total Absent:' . $totalAbsent . ',  Attendance Exception:' . $attendanceException . ', Daily Movement:' . $dailyMovement;
+            $html .= '<tfoot><tr style="font-weight:bold"><td colspan="6">' . $summary . '</td></tr></tfoot>';
             $html .= '</tbody>';
             $html .= '</table>';
             echo $html;
@@ -700,15 +697,15 @@ class AttendanceReportController extends CI_Controller
         // perform subtraction to get the difference (in seconds) between times
         $difference = $lastTime - $firstTime;
         $years = abs(floor($difference / 31536000));
-        $days = abs(floor(($difference-($years * 31536000))/86400));
-        $hours = abs(floor(($difference-($years * 31536000)-($days * 86400))/3600));
-        $mins = abs(floor(($difference-($years * 31536000)-($days * 86400)-($hours * 3600))/60));#floor($difference / 60);
+        $days = abs(floor(($difference - ($years * 31536000)) / 86400));
+        $hours = abs(floor(($difference - ($years * 31536000) - ($days * 86400)) / 3600));
+        $mins = abs(floor(($difference - ($years * 31536000) - ($days * 86400) - ($hours * 3600)) / 60)); #floor($difference / 60);
         // return the difference
         #$timeDiff = $years . " Years, " . $days . " Days, " . $hours . " Hours, " . $mins . " Minutes.</p>";
-        
+
         $timeDiff = $hours . " Hours, " . $mins . " Minutes";
-        if($years==0 && $days==0 && $hours==0 && $mins==0){
-            $timeDiff='';
+        if ($years == 0 && $days == 0 && $hours == 0 && $mins == 0) {
+            $timeDiff = '';
         }
         $data = array(
             'hours' => $hours,
@@ -717,7 +714,7 @@ class AttendanceReportController extends CI_Controller
         );
         return $data;
     }
-  
+
 
     function monthlyAttendanceSummaryReport()
     {
@@ -740,8 +737,8 @@ class AttendanceReportController extends CI_Controller
                 $empCompany = $postData['emp_division'];
                 $empDivision = $postData['emp_department'];
                 $additionalWhere = "";
-                $data['division_name'] = 'All Branch';                
-                if(!empty($empDivision) || ($empDivision != NULL)){
+                $data['division_name'] = 'All Branch';
+                if (!empty($empDivision) || ($empDivision != NULL)) {
                     $additionalWhere = " AND SFE.emp_department=$empDivision ";
                     $divisionName = $this->db->query("SELECT name as divisionName FROM taxonomy WHERE tid=$empDivision")->row('divisionName');
                     $data['division_name'] = $divisionName;
@@ -755,7 +752,7 @@ class AttendanceReportController extends CI_Controller
                 ORDER BY ABS(SFE.grade) ASC")->result();
                 $data['date_range'] = dateRange($data['start_date'], $data['end_date']);
                 $companyName = $this->db->query("SELECT name as companyName FROM taxonomy WHERE tid=$empCompany")->row('companyName');
-                
+
                 $data['company_name'] = $companyName;
                 #dd($employees);
                 foreach ($employees as $empVal) :
@@ -1036,7 +1033,7 @@ class AttendanceReportController extends CI_Controller
         WHERE content_id=$content_id 
         AND STR_TO_DATE(`start_date`,'%d-%m-%Y') <= STR_TO_DATE('$attendance_date','%d-%m-%Y') 
         AND ((`end_date`='') OR (STR_TO_DATE(`end_date`,'%d-%m-%Y') >= STR_TO_DATE('$attendance_date','%d-%m-%Y')))")->row();
-       
+
         if ($empShiftInfo) {
             $empLateCountTime = $empShiftInfo->emp_latecount_time;
             $empEarlyCountTime = $empShiftInfo->emp_earlycount_time;
@@ -1065,7 +1062,6 @@ class AttendanceReportController extends CI_Controller
         // dd($this->db->last_query(),1);
         // dd($logExceptionAttendence);
         if ($logExceptionAttendence) {
-
             if ($logExceptionAttendence->late_status == 'Late_Count_Time') {
                 $empLateCountTime = $logExceptionAttendence->late_count_time;
             } elseif ($logExceptionAttendence->late_status == 'Late_Not_Count') {
@@ -1084,11 +1080,11 @@ class AttendanceReportController extends CI_Controller
             }
             $logWeeklyHoliDay = $logExceptionAttendence->weekly_holiday;
         }
-        if($content_id == 34){ 
+        if ($content_id == 34) {
             // dd($empLateCountTime,1);
             // dd($empShiftInfo);
         }
-       
+
         $result['late_count_time'] = $empLateCountTime;
         $result['early_count_time'] = $empEarlyCountTime;
         // ckeck weekly holiday
@@ -1100,24 +1096,25 @@ class AttendanceReportController extends CI_Controller
         #dd($this->db->last_query());
         $dayName = strtolower(date('D', strtotime($attendance_date)));
         $dayOff = $dayName . '_off';
-       
+
         if ($weeklyHoliday && $weeklyHoliday->$dayOff === 'off' && $logWeeklyHoliDay != 'working_day') {
             $remarks = 'Weekly Holiday';
             $result['status'] = 'W.H';
             $result['remarks'] = $remarks;
             return $result;
         }
-        if($attendance_date=='06-01-2023'){
+        if ($attendance_date == '06-01-2023') {
             // dd($attendance_date,1);
             // dd($weeklyHoliday);
         }
         $getAttendance = $this->db->query("SELECT * FROM emp_attendance WHERE content_id=$content_id AND STR_TO_DATE(attendance_date,'%d-%m-%Y') = STR_TO_DATE('$attendance_date','%d-%m-%Y')")->row();
         #dd($this->db->last_query());
+
+
         if ($getAttendance) {
             $login_time = $getAttendance->login_time;
             $logout_time = $getAttendance->logout_time;
             if ($attendanceRequired == 'Required') {
-                
                 if ($login_time && $empLateCountTime && $empEarlyCountTime && (strtotime($login_time) >= strtotime($empLateCountTime)) && (strtotime($logout_time) <= strtotime($empEarlyCountTime))) {
                     if (strtotime($attendance_date) < strtotime(date('d-m-Y'))) {
                         #$remarks = "Late & Early";
@@ -1162,17 +1159,18 @@ class AttendanceReportController extends CI_Controller
                 }
             }elseif ($attendanceRequired == 'Not_Required') {
                 #$remarks = "attendance_not_required";
-                $result['login'] = $login_time;
-                $result['logout'] = $logout_time;
+                $result['login'] = isset($getAttendance->login_time) ? $getAttendance->login_time : '';
+                $result['logout'] = isset($getAttendance->logout_time) ? $getAttendance->logout_time : '';
                 $result['status'] = 'A.N.R';
                 $result['remarks'] = 'Attendance not required';
-            }elseif ($attendanceRequired == 'Optional') {
+                return $result;
+            } elseif ($attendanceRequired == 'Optional') {
                 #$remarks = "Attendance optional";
-                $result['login'] = $login_time;
-                $result['logout'] = $logout_time;
+                $result['login'] = isset($getAttendance->login_time) ? $getAttendance->login_time : '';
+                $result['logout'] = isset($getAttendance->logout_time) ? $getAttendance->logout_time : '';
                 $result['status'] = 'A.O';
                 $result['remarks'] = 'Attendance optional';
-            }else{
+            }else {
                 #$remarks = "Undefine";
                 $result['login'] = $login_time;
                 $result['logout'] = $logout_time;
@@ -1187,7 +1185,7 @@ class AttendanceReportController extends CI_Controller
             $dailyMovement = $dailyMovementExist->row();
             $remarks = "Daily Movement";
             $result['status'] = 'D.M';
-            $result['remarks'] = 'Daily Movement ('.$dailyMovement->remarks.')';
+            $result['remarks'] = 'Daily Movement (' . $dailyMovement->remarks . ')';
             #continue;
         }
 
@@ -1198,9 +1196,27 @@ class AttendanceReportController extends CI_Controller
             $attendanceException = $attendanceExceptionExist->row();
             $remarks = "Attendance Exception";
             $result['status'] = 'A.E';
-            $result['remarks'] = 'Attendance Exception ('.$attendanceException->exception_type.')';
+            $result['remarks'] = 'Attendance Exception (' . $attendanceException->exception_type . ')';
             #continue;
         }
+
+        if ($result['status'] == 'A') {
+            if ($attendanceRequired == 'Not_Required') {
+                #$remarks = "attendance_not_required";
+                $result['login'] = isset($getAttendance->login_time) ? $getAttendance->login_time : '';
+                $result['logout'] = isset($getAttendance->logout_time) ? $getAttendance->logout_time : '';
+                $result['status'] = 'A.N.R';
+                $result['remarks'] = 'Attendance not required';
+                return $result;
+            } elseif ($attendanceRequired == 'Optional') {
+                #$remarks = "Attendance optional";
+                $result['login'] = isset($getAttendance->login_time) ? $getAttendance->login_time : '';
+                $result['logout'] = isset($getAttendance->logout_time) ? $getAttendance->logout_time : '';
+                $result['status'] = 'A.O';
+                $result['remarks'] = 'Attendance optional';
+            }
+        }
+
         return $result;
     }
 }

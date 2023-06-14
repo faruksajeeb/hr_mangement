@@ -43,6 +43,12 @@ $view_single_leave_reports = $this->users_model->getuserwisepermission("view_sin
 $create_requisition = $this->users_model->getuserwisepermission("create_requisition", $user_id);
 $view_challan = $this->users_model->getuserwisepermission("view_challan", $user_id);
 
+$tax_caculator = $this->users_model->getuserwisepermission("tax_caculator", $user_id);
+$pf_statement = $this->users_model->getuserwisepermission("pf_statement", $user_id);
+$add_leave_encashment = $this->users_model->getuserwisepermission("add_leave_encashment", $user_id);
+$edit_leave_encashment = $this->users_model->getuserwisepermission("edit_leave_encashment", $user_id);
+$view_leave_encashment = $this->users_model->getuserwisepermission("view_leave_encashment", $user_id);
+
 if ($user_type == 1 || $user_type == 5 || $user_type == 9) {
   // Payslip Permission ----------
   $generatePayslip = $this->users_model->getuserwisepermission("genarate_pay_slip", $user_id);
@@ -118,7 +124,7 @@ $viewDailyMovement = $this->users_model->getuserwisepermission("view_daily_movem
           <?php // if ($this->session->userdata('user_type') !=6) { 
           ?>
           <!-- Entry parent menu start here -->
-          <li ><a href="#"><span class="glyphicon glyphicon-edit"> </span> Entry <span class="pull-right glyphicon glyphicon-menu-down"> </span></a>
+          <li><a href="#"><span class="glyphicon glyphicon-edit"> </span> Entry <span class="pull-right glyphicon glyphicon-menu-down"> </span></a>
 
 
 
@@ -233,8 +239,8 @@ $viewDailyMovement = $this->users_model->getuserwisepermission("view_daily_movem
                         <li><a href="<?php echo site_url('empattendance/adddailyattendance'); ?>">Daily Attendance</a></li>
                       <?php } ?>
                       <!-- <?php if ($user_type == 1 || $add_informed['status'] == 1) { ?>
-                         <li><a href="<?php echo site_url('empattendance/attendanceinformed'); 
-                                            ?>">Informed Adjustment</a></li>
+                         <li><a href="<?php echo site_url('empattendance/attendanceinformed');
+                                      ?>">Informed Adjustment</a></li>
                       <?php } ?> -->
                       <?php if ($user_type == 1 || $add_log_maintenence['status'] == 1) { ?>
                         <li><a href="<?php echo site_url('empattendance/logMaintenance'); ?>">Log Maintenence</a></li>
@@ -270,6 +276,9 @@ $viewDailyMovement = $this->users_model->getuserwisepermission("view_daily_movem
                         <li><a href="#">Casual and Sick Leave Credit for New Employee</a></li>
                         <li><a href="#">List Of Approval Leave Application For Sanction</a></li>
                         <li><a href="#">Leave Cancellation Entry</a></li> -->
+                      <?php } ?>
+                      <?php if ($view_leave_encashment['status'] == 1 ||  $user_type == 1) { ?>
+                        <li><a href="<?php echo base_url(); ?>leave-encashment">Leave Encashment</a></li>
                       <?php } ?>
                     </ul>
                   </li>
@@ -341,7 +350,7 @@ $viewDailyMovement = $this->users_model->getuserwisepermission("view_daily_movem
                   </li>
 
                   <?php if ($user_id == 6) { ?>
-                  
+
 
                     <!--
                 <li><a href="#">Employee Tour</a>
@@ -398,14 +407,14 @@ $viewDailyMovement = $this->users_model->getuserwisepermission("view_daily_movem
                   <li><a href="<?php echo site_url(); ?>advance-salary">Advance Salary</a></li>
                   <li><a href="<?php echo site_url(); ?>pf-payments">PF Payments</a></li>
                   <li>
-                      <a href="#">Employee Bonus <span class="pull-right glyphicon glyphicon-menu-right"></span></a>
-                      <ul>
-                        <li><a href="<?php echo site_url(); ?>festival-bonus">Festival Bonus</a></li>
-                        <li><a href="<?php echo site_url(); ?>performance-bonus">Performance Bonus</a></li>
-                        <li><a href="<?php echo site_url(); ?>special-bonus">Special Bonus</a></li>
-                        <li><a href="<?php echo site_url(); ?>incentive">Incentive</a></li>
-                      </ul>
-                    </li>
+                    <a href="#">Employee Bonus <span class="pull-right glyphicon glyphicon-menu-right"></span></a>
+                    <ul>
+                      <li><a href="<?php echo site_url(); ?>festival-bonus">Festival Bonus</a></li>
+                      <li><a href="<?php echo site_url(); ?>performance-bonus">Performance Bonus</a></li>
+                      <li><a href="<?php echo site_url(); ?>special-bonus">Special Bonus</a></li>
+                      <li><a href="<?php echo site_url(); ?>incentive">Incentive</a></li>
+                    </ul>
+                  </li>
                   <li><a href="<?php echo site_url(); ?>gratuity">Gratuity</a></li>
                   <li><a href="#">Salary Increment <span class="pull-right glyphicon glyphicon-menu-right"></span></a>
                     <ul>
@@ -465,7 +474,7 @@ $viewDailyMovement = $this->users_model->getuserwisepermission("view_daily_movem
           <?php } ?>
 
           <!-- Reports parent menu start here -->
-          <li><a href="#"><span class="glyphicon glyphicon-file"></span> Reports  <span class="pull-right glyphicon glyphicon-menu-down"></span></a>
+          <li><a href="#"><span class="glyphicon glyphicon-file"></span> Reports <span class="pull-right glyphicon glyphicon-menu-down"></span></a>
             <?php if ($user_type == 8) { // Store area 
             ?>
               <ul>
@@ -514,14 +523,14 @@ $viewDailyMovement = $this->users_model->getuserwisepermission("view_daily_movem
                       <li><a href="<?php echo base_url() ?>employee-wise-pay-slip-report">Employee Wise Payslip</a></li>
 
                       <li><a href="<?php echo base_url() ?>salary-statement">Salary Statement</a></li>
-                      <li><a href="<?php echo base_url() ?>bank-advice">Bank Advice</a></li>                      
-                      <li><a href="<?php echo base_url() ?>provident-fund-statement">Provident Fund Payment Statement</a></li>                      
-                      <li><a href="<?php echo base_url() ?>advance-salary-statement">Advance Salary Statement</a></li>                      
-                      <li><a href="<?php echo base_url() ?>gratuity-statement">Gratuity Statement</a></li>                      
-                      <li><a href="<?php echo base_url() ?>incentive-statement">Incentive Statement</a></li>                      
-                      <li><a href="<?php echo base_url() ?>festival-bonus-statement">Festival Bonus Statement</a></li>                      
-                      <li><a href="<?php echo base_url() ?>performance-bonus-statement">Performance Bonus Statement</a></li>                      
-                      <li><a href="<?php echo base_url() ?>special-bonus-statement">Special Bonus Statement</a></li>                      
+                      <li><a href="<?php echo base_url() ?>bank-advice">Bank Advice</a></li>
+                      <li><a href="<?php echo base_url() ?>provident-fund-statement">Provident Fund Payment Statement</a></li>
+                      <li><a href="<?php echo base_url() ?>advance-salary-statement">Advance Salary Statement</a></li>
+                      <li><a href="<?php echo base_url() ?>gratuity-statement">Gratuity Statement</a></li>
+                      <li><a href="<?php echo base_url() ?>incentive-statement">Incentive Statement</a></li>
+                      <li><a href="<?php echo base_url() ?>festival-bonus-statement">Festival Bonus Statement</a></li>
+                      <li><a href="<?php echo base_url() ?>performance-bonus-statement">Performance Bonus Statement</a></li>
+                      <li><a href="<?php echo base_url() ?>special-bonus-statement">Special Bonus Statement</a></li>
                       <?php if ($user_id == 6) { ?>
                         <!-- <li><a href="#">Provident Fund Statement</a></li>
                         <li><a href="#">Medical Reimbursement Statement</a></li>
@@ -683,7 +692,7 @@ $viewDailyMovement = $this->users_model->getuserwisepermission("view_daily_movem
           <?php if ($user_type == 1) { ?>
             <li><a href="#"><span class="glyphicon glyphicon-cog"> </span> Settings <span class="pull-right glyphicon glyphicon-menu-down"></span></a>
               <ul>
-                <li><a href="#"> User  <span class="pull-right glyphicon glyphicon-menu-right"></span></a>
+                <li><a href="#"> User <span class="pull-right glyphicon glyphicon-menu-right"></span></a>
                   <ul>
                     <!--     <li><a href="<?php echo site_url(); ?>user/userpermission">User Permission</a></li>
             <li><a href="<?php echo site_url(); ?>user/userwisepermission">User Wise Permission</a></li> -->

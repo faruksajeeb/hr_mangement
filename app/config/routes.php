@@ -354,5 +354,11 @@ $route['special-bonus-statement'] = 'Report/PayrollReportController/specialBonus
 $route['tax-calculation'] = 'Report/TaxReportController/taxCalculation';
 $route['pf-statement'] = 'Report/PfReportController/pfStatement';
 
+# Leave encashment
+$route['leave-encashment'] = 'LeaveEncashmentController/leaveEncashment';
+$route['add-leave-encashment'] = 'LeaveEncashmentController/create';
+$route['save-leave-encashment'] = 'LeaveEncashmentController/save';
+$route['edit-leave-encashment'] = 'LeaveEncashmentController/edit';
+
 // api ---
 $route['get-employee-info-by-content-id/(:any)'] = 'Api/getEmployeeInfoByContentId/$1';
