@@ -85,6 +85,8 @@ $route['admin-leave-application'] = 'leavemaster/adminLeaveApplication';
 $route['print-leave-application/(:any)'] = 'leavemaster/printLeaveApplication/$1';
 $route['save-admin-leave-application'] = 'leavemaster/saveAdminLeaveApplication';
 
+$route['get_earn_leave_balance/(:any)/(:any)'] = 'leavemaster/getEarnLeaveBalance/$1/$1';
+
 # Attendance Exceptions
 $route['attendance-exceptions'] = 'AttendanceExceptionController/attendanceExceptions';
 

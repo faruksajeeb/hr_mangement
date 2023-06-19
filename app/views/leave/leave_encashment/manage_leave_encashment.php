@@ -127,11 +127,63 @@
             ?>
 
             <div class="wrapper">
-
-                <br />
                 <div class="row">
                     <div class="col-md-12 col-xs-12 ">
                         <h3>Leave Encashment</h3>
+                        <hr>
+                        <form id="Search_form" action="" method="GET">
+                            <fieldset>
+                                <!-- <legend>Filter Section</legend> -->
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="staff">Select Staff *:</label>
+                                            <?php if (isset($edit_data)) { ?>
+                                                <input type="hidden" name="search_content_id" id="" value="<?php echo $edit_data->content_id; ?>" />
+                                            <?php } ?>
+                                            <select name="search_content_id" id="search_content_id" <?php if (isset($edit_data)) {
+                                                                                                        echo "disabled";
+                                                                                                    } ?> data-placeholder="Choose a staff..." class="chosen-select" >
+                                                <option value="">Choose a staff...</option>
+                                                <?php foreach ($active_employees as $key => $empVal) : ?>
+                                                    <option value="<?php echo $empVal->content_id; ?>"  <?php if (($this->input->get('search_content_id') == $empVal->content_id)) {
+                                                                                                        echo "selected='selected'";
+                                                                                                    } ?>><?php echo $empVal->emp_id . ' | ' . $empVal->emp_name; ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Leave Type *</label>
+                                            <select class="form-select"  name="search_leave_type_id" id="search_leave_type_id" >
+                                                <option value="">--select leave type--</option>
+                                                <?php foreach ($leave_types as $leave_type) : ?>
+                                                    <option value="<?php echo $leave_type->id; ?>" <?php if (($this->input->get('search_leave_type_id') == $leave_type->id)) {
+                                                                                                        echo "selected='selected'";
+                                                                                                    } ?>><?php echo $leave_type->name; ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control search_datepicker" name="date_from" aria-label="Date From" placeholder="Date From" value="<?php echo $this->input->get('date_from');?>">
+                                                <span class="input-group-addon">to</span>
+                                                <input type="text" class="form-control search_datepicker" name="date_to" aria-label="Date To" placeholder="Date To" value="<?php echo $this->input->get('date_to');?>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <button type="submit" name="submit-btn" value="submit" class="btn btn-primary">Filter Data</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+
                         <?php
                         $msg = $this->session->flashdata('message');
                         if ($msg) {
@@ -150,10 +202,12 @@
                                     <th></th>
                                     <th>Employee</th>
                                     <th>Employee ID</th>
-                                    <th>Adjust Month(mm/yy)</th>
+                                    <th>Encashment Date</th>
+                                    <th>Leave Type</th>
+                                    <th>Days</th>
+                                    <th>Per day Amount</th>
+                                    <th>Encashed Amount</th>
                                     <th>Payment Type</th>
-                                    <th>Amount</th>
-                                    <th>Payment Date</th>
                                     <th>Remarks</th>
                                     <th>Action</th>
                                 </tr>
@@ -166,28 +220,27 @@
                                         <td><?php echo $k + 1; ?></td>
                                         <td>
                                             <div class="row">
-                                                
-                                                    <span class="" style="color:orangered;font-weight:bold"><?php echo $val->emp_name; ?></span><br />
-                                                    <!-- <span class="" style="color:gray;"><?php echo $val->designation_name; ?></span> -->
-                                                
+
+                                                <span class="" style="color:orangered;font-weight:bold"><?php echo $val->emp_name; ?></span><br />
+                                                <!-- <span class="" style="color:gray;"><?php echo $val->designation_name; ?></span> -->
+
                                             </div>
                                         </td>
                                         <td><?php echo $val->emp_id; ?></td>
-                                        <td><?php
-                                        $dt = DateTime::createFromFormat('!m', $val->adjust_month);
-                                        $adjust_month = $dt->format('F');
-                                        
-                                        
-                                        echo $adjust_month.', '.$val->adjust_year; ?></td>
+                                        <td><?php echo date("F jS, Y", strtotime($val->encashment_date)); ?></td>
+                                        <td><?php echo $val->leave_type_name; ?></td>
+                                        <td><?php echo $val->encashed_days; ?></td>
+                                        <td style="font-weight:bold">৳ <?php echo number_format($val->per_day_amount); ?></td>
+                                        <td style="font-weight:bold">৳ <?php echo number_format($val->encashment_amount); ?></td>
+
+
                                         <td><?php echo $val->payment_type; ?></td>
-                                        <td style="font-weight:bold">৳ <?php echo number_format($val->amount); ?></td>                                        
-                                        <td><?php echo date("F jS, Y", strtotime($val->payment_date)); ?></td>
                                         <td><?php echo $val->remarks; ?></td>
                                         <td>
                                             <a class="btn custom-btn btn-sm btn-default edit_leave_encashment" id='<?php echo $val->id; ?>' href="#"><span class="glyphicon glyphicon-edit"> </span> Edit</a>
                                             <!-- <a class="btn custom-btn btn-sm btn-default view_salary" id="<?php echo $val->id; ?>" href="#"><span class="glyphicon glyphicon-eye-open"> </span> View</a> -->
-                                            <a class="btn custom-btn btn-sm btn-danger"  onclick="return confirm('You are not allow to delete this item?');">
-                                                <span class="glyphicon glyphicon-remove-sign"> </span> Delete</a>
+                                            <a class="btn custom-btn btn-sm btn-danger" onclick="return confirm('You are not allow to delete this item?');">
+                                                <span class="glyphicon glyphicon-remove-sign disabled" disabled="disabled"> </span> Delete</a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -217,7 +270,15 @@
             $('#example').DataTable({
                 stateSave: true,
             });
+            $('.search_datepicker').datepicker({
+                viewMode: 'days',
+                // format: 'd-m-Y',
+                showTodayButton: true,
+                dateFormat: 'yy-mm-dd',
+                maxDate: 0
+            });
 
+            $(".chosen-select").chosen();
             $('#add_leave_encashment').click(function(e) {
                 $.ajax({
                     url: url_prefix + "add-leave-encashment",
@@ -249,7 +310,7 @@
                     });
                 }
             });
-      
+
             $(".chosen-select").chosen();
 
 

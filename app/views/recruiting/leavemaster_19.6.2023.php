@@ -11,12 +11,6 @@
     ?>
     <!--chosen-->
     <link rel="stylesheet" href="<?php echo base_url(); ?>resources/plugins/chosenSelect/chosen.css">
-    <style>
-         .reset {
-            all: revert;
-            border: 1px solid #CCC;
-        }
-    </style>
     <script>
         $(document).ready(function() {
             $(".chosen-select").chosen();
@@ -485,55 +479,44 @@
                         <div class="card">
                             <div class="card-header">
                                 <h4>Employee Leave Details</h4>
-                                <br>
+                                <hr />
                             </div>
                             <div class="card-body">
-                                
-                                    <fieldset class="reset">
+                                <table class="table">
 
-                                        <legend class="reset">Earn Leave Info.</legend>
-                                        <table class="table">
-                                        <tr>
+                                    <tr>
                                         <th>Previous Earn Leave Balance
-                                            <?php //print_r($earn_leave_info); ?>
                                         </th>
                                         <td>
-                                            <div class="badge"><?php echo $earn_leave_info['opening_balance']; ?></div>
+                                            <div class="badge"><?php echo $previous_carry_forward_leave_balance; ?></div>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    $report_year = $defaultyear;
+                                    $report_month = $defaultmonth;
+                                    $report_date = "$report_year-$report_month-01";
+                                    $earn_leave_number = $this->db->query("SELECT total_days as TOTAL FROM emp_yearly_leave_cat_history WHERE content_id=$defaultcontent_id AND leave_type=864 
+                                        AND ((start_year<='$report_date' AND end_year='0000-00-00') OR ('$report_date' BETWEEN start_year AND end_year))")->row('TOTAL');
+
+                                    ?>
+                                    <tr>
+                                        <th>This Year Earn Leave</th>
+                                        <td>
+                                            <div class="badge"><?php echo $earn_leave_number; ?></div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>New Earn Leave in <?php echo $defaultyear;?> (+)</th>
+                                        <th>Total Earn Leave <span style="font-size:10px">(Previous+This Year)</span></th>
                                         <td>
-                                            <div class="badge"><?php echo $earn_leave_info['this_year_earn_leave']; ?></div>
+                                            <div class="badge"><?php echo $earn_leave_number + $previous_carry_forward_leave_balance; ?></div>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th>Total Earn Leave (=) <span style="font-size:10px">(Previous + In  <?php echo $defaultyear;?>)</span></th>
+                                    <!-- <tr>
+                                        <th>This Year Total Leave</th>
                                         <td>
-                                            <div class="badge"><?php echo $earn_leave_info['opening_balance'] + $earn_leave_info['this_year_earn_leave']; ?></div>
+                                            <div class="badge"><?php echo $current_year_total_leave; ?></div>
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Earn Leave Availed in <?php echo $defaultyear;?> (-)</th>
-                                        <td>
-                                            <div class="badge"><?php echo $earn_leave_info['availed']; ?></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Encashment in <?php echo $defaultyear;?> (-)</th>
-                                        <td>
-                                            <div class="badge"><?php echo $earn_leave_info['encashment']; ?></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Balance in <?php echo $defaultyear;?> (=)</th>
-                                        <td>
-                                            <div class="badge"><?php echo $earn_leave_info['balance']; ?></div>
-                                        </td>
-                                    </tr>
-                                </table>
-                                    </fieldset>
-                                    <table class="table">
+                                    </tr> -->
                                     <tr>
                                         <td colspan="2">
                                             <table class="table table-sm">
@@ -546,7 +529,6 @@
                                                 <?php
                                                 $thisYearAvailed = 0;
                                                 $thisYearTotal =0;
-                                                $grandTotalLeave=0;
                                                 foreach ($allleavetype as $leave_type) {
                                                     $leave_type_id = $leave_type['id'];
                                                     $leave_type_total = 0;
@@ -567,12 +549,12 @@
                                                         }
                                                     }
                                                     $leave_number = $this->db->query("SELECT total_days as TOTAL FROM emp_yearly_leave_cat_history WHERE content_id=$defaultcontent_id AND leave_type=$leave_type_id 
-                                                        AND ((start_year<='$report_date' AND end_year='0000-00-00') OR ('$report_date' BETWEEN start_year AND end_year)) ORDER BY id DESC LIMIT 1")->row('TOTAL');
+                                                        AND ((start_year<='$report_date' AND end_year='0000-00-00') OR ('$report_date' BETWEEN start_year AND end_year))")->row('TOTAL');
                                                     if ($leave_number) {
                                                         $leave_type_total = $leave_number;
                                                         $thisYearTotal +=$leave_type_total;
                                                     }
-                                                    $totalLeave = ($leave_type['name']=='Earned Leave') ? ($earn_leave_info['opening_balance'] + $earn_leave_info['this_year_earn_leave']) : $leave_type_total;
+                                                    $totalLeave = ($leave_type['name']=='Earned Leave') ? $leave_type_total+$previous_carry_forward_leave_balance : $leave_type_total;
                                                     $balance = $totalLeave-$leave_availed;
                                                     if(($totalLeave==0) && ($leave_availed==0) && ($balance ==0)){
                                                         continue;
@@ -584,18 +566,36 @@
                                                         <td style="color:red"><?php echo $leave_availed; ?></td>
                                                         <td style="color:green"><?php echo $balance; ?></td>
                                                     </tr>
-                                                    <?php 
-                                                    $grandTotalLeave += $totalLeave;
-                                                } ?>
+                                                    <?php } ?>
                                                     <tfoot>
                                                         <th>TOTAL</th>
-                                                        <th><?php echo $grandTotalLeave; ?></th>
+                                                        <th><?php echo $leaveTotal = $current_year_total_leave+$previous_carry_forward_leave_balance; ?></th>
                                                         <th style="color:red"><?php echo $thisYearAvailed; ?></th>
-                                                        <th style="color:green"><?php echo $grandTotalLeave-$thisYearAvailed; ?></th>
+                                                        <th style="color:green"><?php echo $leaveTotal-$thisYearAvailed; ?></th>
                                                     </tfoot>
                                             </table>
                                         </td>
                                     </tr>
+
+                                    <!-- <tr>
+                                        <td><?php echo $leave_type['name']; ?></td>
+                                        <td>
+                                            <div class="badge"><?php echo $leave_availed . " /" . $thisYearAvailed; ?></div>
+                                        </td>
+                                    </tr> -->
+                              
+                                <!-- <tr>
+                                    <th>This Year Availed</th>
+                                    <td>
+                                        <div class="badge"><?php echo $thisYearAvailed ?></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>This Year Available</th>
+                                    <td>
+                                        <div class="badge"><?php echo $current_year_total_leave - $thisYearAvailed ?></div>
+                                    </td>
+                                </tr> -->
                                 <tr>
                                     <td colspan="2">
                                         [NOTE: Special Leave, Compensated Leave not deduct from Yearly Leave]

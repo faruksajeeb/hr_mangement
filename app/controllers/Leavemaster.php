@@ -24,6 +24,13 @@ class Leavemaster extends CI_Controller {
         redirect("leavemaster/single_leave");
     }
 
+    public function getEarnLeaveBalance($contentId,$year){   
+        $contentId = $this->uri->segment(2);
+        $year = $this->uri->segment(3);    
+        $result = $this->emp_leave_model->getEarnLeaveBalance($contentId,$year);
+        dd($result);
+    }
+
     function single_leave($year = null, $month = null) {
         $this->check_permission_controller->check_permission_action("add_leave");
         if (!$year) {
@@ -50,6 +57,7 @@ class Leavemaster extends CI_Controller {
         $previous_carry_forward_leave_balance = 0;
         
         $previous_carry_forward_leave_balance = $this->emp_leave_model->getPreviousCarryForwardLeaveBalance($year,$data['defaultcontent_id']);
+        $data['earn_leave_info'] = $this->emp_leave_model->getEarnLeaveBalance($data['defaultcontent_id'],$year,$month);
        
         $data['previous_carry_forward_leave_balance'] = $previous_carry_forward_leave_balance;
         

@@ -87,11 +87,12 @@ class TaxReportController extends CI_Controller
             foreach ($employees as $key => $employee) {
 
                 # get fastival bonus data
-                $fastivalBonusData = $this->db->query("SELECT * FROM tbl_festival_bonus WHERE content_id=$employee->content_id AND ((adjust_month>=7 AND adjust_year=$fromYear) OR (adjust_month<=6 AND adjust_year=$toYear)) ")->result();
+                // $fastivalBonusData = $this->db->query("SELECT * FROM tbl_festival_bonus WHERE content_id=$employee->content_id AND ((adjust_month>=7 AND adjust_year=$fromYear) OR (adjust_month<=6 AND adjust_year=$toYear)) ")->result();
                 # get leave encashment data
-                $encashmentData = $this->db->query("SELECT * FROM tbl_festival_bonus WHERE content_id=$employee->content_id AND ((adjust_month>=7 AND adjust_year=$fromYear) OR (adjust_month<=6 AND adjust_year=$toYear)) ")->result();
+                $encashmentData = $this->db->query("SELECT SUM(encashed_days) as total_days, SUM(encashment_amount) as total_amount FROM tbl_leave_encashments WHERE content_id=$employee->content_id AND (encashment_date BETWEEN  '$fromDate' AND  '$toDate') GROUP BY content_id LIMIT 1")->row();
+                // dd($encashmentData);
                 # get intensive data
-                $intensiveData = $this->db->query("SELECT * FROM tbl_incentive WHERE content_id=$employee->content_id AND ((adjust_month>=7 AND adjust_year=$fromYear) OR (adjust_month<=6 AND adjust_year=$toYear)) ")->result();
+                $intensiveData = $this->db->query("SELECT COUNT(id) as total_incentive,SUM(amount) as total_amount  FROM tbl_incentive WHERE content_id=$employee->content_id AND ( (adjust_month>=7 AND adjust_year=$fromYear) OR (adjust_month<=6 AND adjust_year=$toYear) ) ")->result();
 
                 $empName = substr(($key + 1) . '-' . $employee->emp_name, 0, 25);
                 // Create a new worksheet called "My Data"
@@ -190,8 +191,8 @@ class TaxReportController extends CI_Controller
                 $myWorkSheet->setCellValue('E28', "=E6");
                 $myWorkSheet->setCellValue('E31', "=E6");
                 $myWorkSheet->setCellValue('E32', "=E7");
-                $myWorkSheet->setCellValue('E35', 0); //Leave encashment
-                $myWorkSheet->setCellValue('E36', 0); // intensive
+                $myWorkSheet->setCellValue('E35', isset($encashmentData->total_amount)?$encashmentData->total_amount:0); //Leave encashment
+                $myWorkSheet->setCellValue('E36', isset($intensiveData->total_amount)?$intensiveData->total_amount:0); // intensive
 
                 $myWorkSheet->setCellValue('F6', 12);
                 $myWorkSheet->setCellValue('F7', 1);
@@ -208,8 +209,8 @@ class TaxReportController extends CI_Controller
                 $myWorkSheet->setCellValue('F31', 2);
                 $myWorkSheet->setCellValue('F32', 1);
 
-                $myWorkSheet->setCellValue('F35', 1);
-                $myWorkSheet->setCellValue('F36', 1);
+                $myWorkSheet->setCellValue('F35', isset($encashmentData->total_days)?$encashmentData->total_days:1);
+                $myWorkSheet->setCellValue('F36', isset($intensiveData->total_incentive)?$intensiveData->total_incentive:1);
 
 
                 $myWorkSheet->setCellValue('G6', "=F6*E6");
@@ -445,7 +446,6 @@ class TaxReportController extends CI_Controller
             ob_end_clean();
             $writer->save('php://output');
             die();
-
         }
 
         $userId = $this->session->userdata('user_id');

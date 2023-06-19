@@ -91,8 +91,7 @@ class Emp_leave_model extends CI_Model
             leave_type=864 AND 
             (
                 (YEAR(start_year) <= ($year-1) AND end_year='0000-00-00') OR 
-                (
-                    YEAR(start_year) = ($year-1) AND YEAR(end_year)=($year-1)
+                (YEAR(start_year) = ($year-1) AND YEAR(end_year)=($year-1)
                 )
             ) AND 
             content_id=".$contentId." 
@@ -109,6 +108,155 @@ class Emp_leave_model extends CI_Model
             return $current_year_total_leave; 
         }  
 }
+
+    public function getEarnLeaveBalance($contentId,$year,$month){
+        $data = [];
+        $leaveTypeId = 864; # Earn leave
+        $report_date = "$year-$month-01";
+        $thisYearEarnLeave = $this->db->query("SELECT total_days as TOTAL FROM emp_yearly_leave_cat_history 
+                WHERE content_id=? AND leave_type=? 
+                AND ((start_year<=? AND end_year='0000-00-00') 
+                OR (? BETWEEN start_year AND end_year)) ORDER BY id DESC LIMIT 1",array($contentId,$leaveTypeId,$report_date,$report_date))->row('TOTAL');
+        $thisYearEarnLeave = $thisYearEarnLeave? $thisYearEarnLeave:0;
+        # OpeningBalance 2022
+        $openingBalance = $this->db->query("SELECT total_days as openingBalance FROM emp_yearly_leave_cat_history 
+        WHERE content_id=? AND leave_type=? AND YEAR(start_year)=?",
+        array($contentId,$leaveTypeId,2021))->row('openingBalance');
+       
+        switch ($year) {
+            case 2021:                
+                $data = array(
+                    'opening_balance' => 0,
+                    'this_year_earn_leave' => $thisYearEarnLeave,
+                    'encashment' => 0,
+                    'availed' => 0,
+                    'balance' => $openingBalance? $openingBalance:0,
+                );
+                break;
+            case 2022:
+
+                $encashmentIn2022 = $this->db->query("SELECT SUM(encashed_days) as encashmentIn2022 FROM tbl_leave_encashments 
+                WHERE content_id=? AND YEAR(encashment_date)=? AND leave_type_id=? GROUP BY content_id,leave_type_id",
+                array($contentId,2022,$leaveTypeId))->row('encashmentIn2022');
+
+                $leaveAvailedIn2022 = $this->db->query("SELECT SUM(leave_total_day) as leaveAvailedIn2022 FROM emp_leave 
+                WHERE leave_type=? AND leave_year = ? AND content_id=? AND approve_status=? GROUP BY content_id,leave_type",
+                array($leaveTypeId,'2022',$contentId,'approved'))->row('leaveAvailedIn2022');        
+                $balance2022 = (($openingBalance+30)-($encashmentIn2022+$leaveAvailedIn2022));
+
+                $data = array(
+                    'opening_balance' => $openingBalance? $openingBalance:0,
+                    'this_year_earn_leave' => $thisYearEarnLeave,
+                    'encashment' => $encashmentIn2022? $encashmentIn2022:0,
+                    'availed' => $leaveAvailedIn2022? $leaveAvailedIn2022:0,
+                    'balance' => $balance2022? $balance2022:0,
+                );
+              break;
+            case 2023:
+                $encashmentIn2022 = $this->db->query("SELECT SUM(encashed_days) as encashmentIn2022 FROM tbl_leave_encashments 
+                WHERE content_id=? AND YEAR(encashment_date)=? AND leave_type_id=? GROUP BY content_id,leave_type_id",
+                array($contentId,2022,$leaveTypeId))->row('encashmentIn2022');
+
+                $leaveAvailedIn2022 = $this->db->query("SELECT SUM(leave_total_day) as leaveAvailedIn2022 FROM emp_leave 
+                WHERE leave_type=? AND leave_year = ? AND content_id=? AND approve_status=? GROUP BY content_id,leave_type",
+                array($leaveTypeId,2022,$contentId,'approved'))->row('total');        
+                $balance2022 = (($openingBalance+30)-($encashmentIn2022+$leaveAvailedIn2022));
+
+                $carrforwardFrom2022 = (30-$leaveAvailedIn2022);
+
+                if($carrforwardFrom2022 > 15){
+                    $carrforwardFrom2022 = 15; # Max 15 forward to next
+                }
+
+                $closing2022 = (($openingBalance + $carrforwardFrom2022) - $encashmentIn2022);
+
+
+
+                $encashmentIn2023 = $this->db->query("SELECT SUM(encashed_days) as encashmentIn2023 FROM tbl_leave_encashments 
+                WHERE content_id=? AND YEAR(encashment_date)=? AND leave_type_id=? GROUP BY content_id,leave_type_id",
+                array($contentId,2023,$leaveTypeId))->row('encashmentIn2023');
+                
+                $leaveAvailedIn2023 = $this->db->query("SELECT SUM(leave_total_day) as leaveAvailedIn2023 FROM emp_leave 
+                WHERE leave_type=? AND leave_year = ? AND content_id=? GROUP BY content_id,leave_type",
+                array($leaveTypeId,2023,$contentId))->row('leaveAvailedIn2023');
+
+                $balance2023 = ($closing2022 + 30) - ($encashmentIn2023 + $leaveAvailedIn2023);
+                $data = array(
+                    'opening_balance' => $closing2022? $closing2022:0,
+                    'this_year_earn_leave' => $thisYearEarnLeave,
+                    'encashment' => $encashmentIn2023? $encashmentIn2023:0,
+                    'availed' => $leaveAvailedIn2023? $leaveAvailedIn2023:0,
+                    'balance' => $balance2023? $balance2023:0,
+                );
+              break;
+            case 2024:
+                $encashmentIn2022 = $this->db->query("SELECT SUM(encashed_days) as encashmentIn2022 FROM tbl_leave_encashments 
+                WHERE content_id=? AND YEAR(encashment_date)=? AND leave_type_id=? GROUP BY content_id,leave_type_id",
+                array($contentId,2022,$leaveTypeId))->row('encashmentIn2022');
+
+                $leaveAvailedIn2022 = $this->db->query("SELECT SUM(leave_total_day) as leaveAvailedIn2022 FROM emp_leave 
+                WHERE leave_type=? AND leave_year = ? AND content_id=? AND approve_status=? GROUP BY content_id,leave_type",
+                array($leaveTypeId,2022,$contentId,'approved'))->row('leaveAvailedIn2022');        
+                $balance2022 = (($openingBalance+30)-($encashmentIn2022+$leaveAvailedIn2022));
+
+                $carrforwardFrom2022 = (30-$leaveAvailedIn2022);
+
+                if($carrforwardFrom2022 > 15){
+                    $carrforwardFrom2022 = 15; # Max 15 forward to next
+                }
+
+                $closing2022 = (($openingBalance + $carrforwardFrom2022) - $encashmentIn2022);
+
+
+
+                $encashmentIn2023 = $this->db->query("SELECT SUM(encashed_days) as encashmentIn2023 FROM tbl_leave_encashments 
+                WHERE content_id=? AND YEAR(encashment_date)=? AND leave_type_id=? GROUP BY content_id,leave_type_id",
+                array($contentId,2023,$leaveTypeId))->row('encashmentIn2023');
+                
+                $leaveAvailedIn2023 = $this->db->query("SELECT SUM(leave_total_day) as leaveAvailedIn2023 FROM emp_leave 
+                WHERE leave_type=? AND leave_year = ? AND content_id=? GROUP BY content_id,leave_type",
+                array($leaveTypeId,2023,$contentId))->row('leaveAvailedIn2023');
+
+                $balance2023 = ($closing2022 + 30) - ($encashmentIn2023 + $leaveAvailedIn2023);
+
+                $carrforwardFrom2023 = (30-$leaveAvailedIn2023);
+
+                if($carrforwardFrom2023 > 15){
+                    $carrforwardFrom2023 = 15; # Max 15 forward to next
+                }
+        
+                $closing2023 = (($closing2022 + $carrforwardFrom2023) - $encashmentIn2023);
+        
+        
+                $encashmentIn2024 = $this->db->query("SELECT SUM(encashed_days) as encashmentIn2024 FROM tbl_leave_encashments 
+                WHERE content_id=? AND YEAR(encashment_date)=? AND leave_type_id=? GROUP BY content_id,leave_type_id",
+                array($contentId,2024,$leaveTypeId))->row('encashmentIn2024');
+                
+                $leaveAvailedIn2024 = $this->db->query("SELECT SUM(leave_total_day) as leaveAvailedIn2024 FROM emp_leave 
+                WHERE leave_type=? AND leave_year = ? AND content_id=? GROUP BY content_id,leave_type",
+                array($leaveTypeId,2024,$contentId))->row('leaveAvailedIn2024');
+        
+                $balance2024 = ($closing2023 + 30) - ($encashmentIn2024 + $leaveAvailedIn2024);
+                $data = array(
+                    'opening_balance' => $closing2023? $closing2023:0,
+                    'this_year_earn_leave' => $thisYearEarnLeave,
+                    'encashment' => $encashmentIn2024? $encashmentIn2024:0,
+                    'availed' => $leaveAvailedIn2024? $leaveAvailedIn2024:0,
+                    'balance' => $closing2023? $closing2023:0,
+                );
+              break;
+            default:
+                $data = array(
+                    'opening_balance' => 0,
+                    'this_year_earn_leave' => 0,
+                    'encashment' => 0,
+                    'availed' => 0,
+                    'balance' => 0,
+                );
+          }
+          return $data; 
+
+    }
     public function getemp_spentleavebydate($leave_date)
     {
         if ($leave_date) {
