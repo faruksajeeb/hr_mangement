@@ -79,21 +79,25 @@ class Dashboard extends CI_Controller {
     public function employeeDashboard(){
         $year=date('Y');
         $month=date('m');
+        $data['report_year'] = $year;
+        $data['report_month'] = $month;
         $emp_atten_date="01-01-$year";
         $data['content_id'] = $this->session->userdata('content_id');
         $content_id = $data['content_id'];
+        $data['earn_leave_info'] = $this->emp_leave_model->getEarnLeaveBalance($data['content_id'],$year,$month);
+       
         $previous_carry_forward_leave_balance = $this->emp_leave_model->getPreviousCarryForwardLeaveBalance($year,$content_id);
        
-        $data['previous_carry_forward_leave_balance'] = $previous_carry_forward_leave_balance;
+        // $data['previous_carry_forward_leave_balance'] = $previous_carry_forward_leave_balance;
         
-        $data['current_year_total_leave'] = $this->emp_leave_model->getCurrentYearTotalLeave($year, $content_id);
-        $report_year = $year;
-        $report_month = $month;
-        $report_date = "$report_year-$report_month-01";
-        $data['this_year_earn_leave'] = $this->db->query("SELECT total_days as TOTAL FROM emp_yearly_leave_cat_history WHERE content_id=$content_id AND leave_type=864 
-            AND ((start_year<='$report_date' AND end_year='0000-00-00') OR ('$report_date' BETWEEN start_year AND end_year))")->row('TOTAL');
+        // $data['current_year_total_leave'] = $this->emp_leave_model->getCurrentYearTotalLeave($year, $content_id);
+        // $report_year = $year;        
+        // $report_month = $month;
+        // $report_date = "$report_year-$report_month-01";
+        // $data['this_year_earn_leave'] = $this->db->query("SELECT total_days as TOTAL FROM emp_yearly_leave_cat_history WHERE content_id=$content_id AND leave_type=864 
+        //     AND ((start_year<='$report_date' AND end_year='0000-00-00') OR ('$report_date' BETWEEN start_year AND end_year))")->row('TOTAL');
 
-        $data['emp_total_leave'] = $this->emp_yearly_leave_history_model->getemp_yearlyleave_historybydate($content_id, $emp_atten_date); 
+        // $data['emp_total_leave'] = $this->emp_yearly_leave_history_model->getemp_yearlyleave_historybydate($content_id, $emp_atten_date); 
         $allleavetype_vid = 16;
         $data['allleavetype'] = $this->taxonomy->getTaxonomyByvid($allleavetype_vid);  
         $this->load->view('employee-dashboard',$data);

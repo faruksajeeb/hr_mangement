@@ -142,7 +142,7 @@ class Emp_leave_model extends CI_Model
                 $leaveAvailedIn2022 = $this->db->query("SELECT SUM(leave_total_day) as leaveAvailedIn2022 FROM emp_leave 
                 WHERE leave_type=? AND leave_year = ? AND content_id=? AND approve_status=? GROUP BY content_id,leave_type",
                 array($leaveTypeId,'2022',$contentId,'approved'))->row('leaveAvailedIn2022');        
-                $balance2022 = (($openingBalance+30)-($encashmentIn2022+$leaveAvailedIn2022));
+                $balance2022 = (($openingBalance+$thisYearEarnLeave)-($encashmentIn2022+$leaveAvailedIn2022));
 
                 $data = array(
                     'opening_balance' => $openingBalance? $openingBalance:0,
@@ -160,9 +160,9 @@ class Emp_leave_model extends CI_Model
                 $leaveAvailedIn2022 = $this->db->query("SELECT SUM(leave_total_day) as leaveAvailedIn2022 FROM emp_leave 
                 WHERE leave_type=? AND leave_year = ? AND content_id=? AND approve_status=? GROUP BY content_id,leave_type",
                 array($leaveTypeId,2022,$contentId,'approved'))->row('total');        
-                $balance2022 = (($openingBalance+30)-($encashmentIn2022+$leaveAvailedIn2022));
+                $balance2022 = (($openingBalance+$thisYearEarnLeave)-($encashmentIn2022+$leaveAvailedIn2022));
 
-                $carrforwardFrom2022 = (30-$leaveAvailedIn2022);
+                $carrforwardFrom2022 = ($thisYearEarnLeave-$leaveAvailedIn2022);
 
                 if($carrforwardFrom2022 > 15){
                     $carrforwardFrom2022 = 15; # Max 15 forward to next
@@ -180,7 +180,7 @@ class Emp_leave_model extends CI_Model
                 WHERE leave_type=? AND leave_year = ? AND content_id=? GROUP BY content_id,leave_type",
                 array($leaveTypeId,2023,$contentId))->row('leaveAvailedIn2023');
 
-                $balance2023 = ($closing2022 + 30) - ($encashmentIn2023 + $leaveAvailedIn2023);
+                $balance2023 = ($closing2022 + $thisYearEarnLeave) - ($encashmentIn2023 + $leaveAvailedIn2023);
                 $data = array(
                     'opening_balance' => $closing2022? $closing2022:0,
                     'this_year_earn_leave' => $thisYearEarnLeave,
@@ -197,9 +197,9 @@ class Emp_leave_model extends CI_Model
                 $leaveAvailedIn2022 = $this->db->query("SELECT SUM(leave_total_day) as leaveAvailedIn2022 FROM emp_leave 
                 WHERE leave_type=? AND leave_year = ? AND content_id=? AND approve_status=? GROUP BY content_id,leave_type",
                 array($leaveTypeId,2022,$contentId,'approved'))->row('leaveAvailedIn2022');        
-                $balance2022 = (($openingBalance+30)-($encashmentIn2022+$leaveAvailedIn2022));
+                $balance2022 = (($openingBalance+$thisYearEarnLeave)-($encashmentIn2022+$leaveAvailedIn2022));
 
-                $carrforwardFrom2022 = (30-$leaveAvailedIn2022);
+                $carrforwardFrom2022 = ($thisYearEarnLeave-$leaveAvailedIn2022);
 
                 if($carrforwardFrom2022 > 15){
                     $carrforwardFrom2022 = 15; # Max 15 forward to next
@@ -217,9 +217,9 @@ class Emp_leave_model extends CI_Model
                 WHERE leave_type=? AND leave_year = ? AND content_id=? GROUP BY content_id,leave_type",
                 array($leaveTypeId,2023,$contentId))->row('leaveAvailedIn2023');
 
-                $balance2023 = ($closing2022 + 30) - ($encashmentIn2023 + $leaveAvailedIn2023);
+                $balance2023 = ($closing2022 + $thisYearEarnLeave) - ($encashmentIn2023 + $leaveAvailedIn2023);
 
-                $carrforwardFrom2023 = (30-$leaveAvailedIn2023);
+                $carrforwardFrom2023 = ($thisYearEarnLeave-$leaveAvailedIn2023);
 
                 if($carrforwardFrom2023 > 15){
                     $carrforwardFrom2023 = 15; # Max 15 forward to next
@@ -236,7 +236,7 @@ class Emp_leave_model extends CI_Model
                 WHERE leave_type=? AND leave_year = ? AND content_id=? GROUP BY content_id,leave_type",
                 array($leaveTypeId,2024,$contentId))->row('leaveAvailedIn2024');
         
-                $balance2024 = ($closing2023 + 30) - ($encashmentIn2024 + $leaveAvailedIn2024);
+                $balance2024 = ($closing2023 + $thisYearEarnLeave) - ($encashmentIn2024 + $leaveAvailedIn2024);
                 $data = array(
                     'opening_balance' => $closing2023? $closing2023:0,
                     'this_year_earn_leave' => $thisYearEarnLeave,

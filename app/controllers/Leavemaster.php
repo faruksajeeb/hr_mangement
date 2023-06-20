@@ -56,12 +56,12 @@ class Leavemaster extends CI_Controller {
         $previous_year_earn_leave_availed =0;
         $previous_carry_forward_leave_balance = 0;
         
-        $previous_carry_forward_leave_balance = $this->emp_leave_model->getPreviousCarryForwardLeaveBalance($year,$data['defaultcontent_id']);
+       // $previous_carry_forward_leave_balance = $this->emp_leave_model->getPreviousCarryForwardLeaveBalance($year,$data['defaultcontent_id']);
         $data['earn_leave_info'] = $this->emp_leave_model->getEarnLeaveBalance($data['defaultcontent_id'],$year,$month);
        
-        $data['previous_carry_forward_leave_balance'] = $previous_carry_forward_leave_balance;
+       // $data['previous_carry_forward_leave_balance'] = $previous_carry_forward_leave_balance;
         
-        $data['current_year_total_leave'] = $this->emp_leave_model->getCurrentYearTotalLeave($year, $data['defaultcontent_id']);
+      //  $data['current_year_total_leave'] = $this->emp_leave_model->getCurrentYearTotalLeave($year, $data['defaultcontent_id']);
         $data['default_emp'] = $this->search_field_emp_model->getallsearch_table_contentByid($default_emp_id['search_query']);
         
         $data['emp_total_leave'] = $this->emp_yearly_leave_history_model->getemp_yearlyleave_historybydate($default_emp_id['search_query'], $emp_atten_date);
