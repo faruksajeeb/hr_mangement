@@ -62,7 +62,7 @@ class User extends CI_Controller {
         $this->load->view('settings/manage_user', $data);
     }
     function saveUser(){
-     
+    
         if ($this->input->post('add_btn')) {     
             $edit_id = $this->input->post('user_id');
             $password = $this->input->post('password');
@@ -80,12 +80,12 @@ class User extends CI_Controller {
 
             if (!$edit_id) {
          
-                $this->form_validation->set_rules('password', 'Password', '|trim|required|matches[confirm_password]');
-                 $this->form_validation->set_rules('confirm_password', 'Confirm password', '|trim|required');
+                $this->form_validation->set_rules('password', 'Password', 'trim|required|matches[confirm_password]');
+                 $this->form_validation->set_rules('confirm_password', 'Confirm password', 'trim|required');
             } else if (($edit_id) && ($password || $confirm_password)) {
                 
-                $this->form_validation->set_rules('password', 'Password', '|trim|required|matches[confirm_password]');
-                $this->form_validation->set_rules('confirm_password', 'Confirm password', '|trim|required');
+                $this->form_validation->set_rules('password', 'Password', 'trim|required|matches[confirm_password]');
+                $this->form_validation->set_rules('confirm_password', 'Confirm password', 'trim|required');
             }
             if ($this->form_validation->run() == FALSE) {
                 $this->session->set_userdata('add_status', 'Please fill up data correctly. '.validation_errors());

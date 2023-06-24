@@ -620,7 +620,7 @@
                         <span style="height:50px;font-weight: bold; ">
                             Md. Nazmul Hasan Chowdhury <br>
                         </span>
-                        Chief Executive Officer (cc)
+                        Chief Executive Officer (CEO)
                     </td>
 
                 </tr>
