@@ -70,6 +70,12 @@
                     <div class="col-md-3"></div>
 
                 </div>
+                <?php
+                $user_id = $this->session->userdata('user_id');
+                $user_type = $this->session->userdata('user_type');                
+                $view_dashboard = $this->users_model->getuserwisepermission("view_dashboard", $user_id);
+                if($user_type==1 || $view_dashboard['status']==1):
+                ?>
                 <div class="row" style="margin:0 20px 20px 20px;">
                     <div class='col-md-3 short_info_div' style="padding:20px ;">
                         <div class="row">
@@ -249,6 +255,7 @@
                     </div>
                     <div class="col-md-3"></div>
                 </div>
+            <?php endif;?>
             </div>
         </div>
     </div>

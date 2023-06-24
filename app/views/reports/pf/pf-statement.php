@@ -187,7 +187,7 @@
 
                                                             <?php
                                                             // dd($userType);
-                                                            if ($userType == 1 || ($all_company_access['status'] == 1)) {
+                                                            if ($userType == 1 || $userType == 9 || ($all_company_access['status'] == 1)) {
 
                                                                 echo '<option value="">--select company--</option>';
                                                                 foreach ($alldivision as $single_division) {

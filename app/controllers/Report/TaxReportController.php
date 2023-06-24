@@ -39,9 +39,6 @@ class TaxReportController extends CI_Controller
     {
         $data = [];
         if ($this->input->post('export_btn')) {
-            //            print_r($this->input->post());
-            //            exit;
-            // $this->form_validation->set_rules('emp_name', 'Employee Name ', 'required');
             $this->form_validation->set_rules('financial_year', 'Financial Year', 'required');
             if ($this->form_validation->run() == FALSE) {
                 $this->session->set_flashdata('errors', validation_errors());

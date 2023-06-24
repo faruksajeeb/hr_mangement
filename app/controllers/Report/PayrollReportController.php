@@ -113,7 +113,7 @@ class PayrollReportController extends CI_Controller
         $userDivision = $this->session->userdata('user_division');
         $userDepartment = $this->session->userdata('user_department');
 
-        if ($userType == 1) {
+        if ($userType == 1 || $userType == 9) {
             $data['employees'] = $this->search_field_emp_model->getAllEmployees();
         } else {
             if (!$userDepartment) {
@@ -211,7 +211,7 @@ class PayrollReportController extends CI_Controller
         $userType = $this->session->userdata('user_type');
         $userDivision = $this->session->userdata('user_division');
         $userDepartment = $this->session->userdata('user_department');
-        if ($userId == 16 || $userId == 36 || $userType == 9 || $userType == 1) {
+        if ($userType == 9 || $userType == 1) {
             $data['alldivision'] = $this->taxonomy->getTaxonomyByvid(1);
         } else {
             if ($userDepartment) {
@@ -299,7 +299,7 @@ class PayrollReportController extends CI_Controller
         $userType = $this->session->userdata('user_type');
         $userDivision = $this->session->userdata('user_division');
         $userDepartment = $this->session->userdata('user_department');
-        if ($userType == 1) {
+        if ($userType == 1 || $userType == 9) {
             $data['alldivision'] = $this->taxonomy->getTaxonomyByvid(1);
         } else {
             if ($userDepartment) {

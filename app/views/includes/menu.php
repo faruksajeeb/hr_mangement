@@ -52,6 +52,15 @@ $add_leave_encashment = $this->users_model->getuserwisepermission("add_leave_enc
 $edit_leave_encashment = $this->users_model->getuserwisepermission("edit_leave_encashment", $user_id);
 $view_leave_encashment = $this->users_model->getuserwisepermission("view_leave_encashment", $user_id);
 
+$provident_fund_statement = $this->users_model->getuserwisepermission("provident_fund_statement", $user_id);
+$advance_salary_statement = $this->users_model->getuserwisepermission("advance_salary_statement", $user_id);
+$gratuity_statement = $this->users_model->getuserwisepermission("gratuity_statement", $user_id);
+$incentive_statement = $this->users_model->getuserwisepermission("incentive_statement", $user_id);
+$festival_bonus_statement = $this->users_model->getuserwisepermission("festival_bonus_statement", $user_id);
+$performance_bonus_statement = $this->users_model->getuserwisepermission("performance_bonus_statement", $user_id);
+$special_bonus_statement = $this->users_model->getuserwisepermission("special_bonus_statement", $user_id);
+
+
 if ($user_type == 1 || $user_type == 5 || $user_type == 9) {
     // Payslip Permission ----------
     $generatePayslip = $this->users_model->getuserwisepermission("genarate_pay_slip", $user_id);
@@ -545,13 +554,27 @@ if ($user_type == 1 || $view_monthly_attendance['status'] == 1 ||
 
                       <li><a href="<?php echo base_url() ?>salary-statement">Salary Statement</a></li>
                       <li><a href="<?php echo base_url() ?>bank-advice">Bank Advice</a></li>
+                      <?php if($user_type == 1 || $provident_fund_statement['status'] == 1): ?>
                       <li><a href="<?php echo base_url() ?>provident-fund-statement">Provident Fund Payment Statement</a></li>
+                      <?php endif; ?>
+                      <?php if($user_type == 1 || $advance_salary_statement['status'] == 1): ?>
                       <li><a href="<?php echo base_url() ?>advance-salary-statement">Advance Salary Statement</a></li>
+                      <?php endif; ?>
+                      <?php if($user_type == 1 || $gratuity_statement['status'] == 1): ?>
                       <li><a href="<?php echo base_url() ?>gratuity-statement">Gratuity Statement</a></li>
+                      <?php endif; ?>
+                      <?php if($user_type == 1 || $incentive_statement['status'] == 1): ?>
                       <li><a href="<?php echo base_url() ?>incentive-statement">Incentive Statement</a></li>
+                      <?php endif; ?>
+                      <?php if($user_type == 1 || $festival_bonus_statement['status'] == 1): ?>
                       <li><a href="<?php echo base_url() ?>festival-bonus-statement">Festival Bonus Statement</a></li>
+                      <?php endif; ?>
+                      <?php if($user_type == 1 || $performance_bonus_statement['status'] == 1): ?>
                       <li><a href="<?php echo base_url() ?>performance-bonus-statement">Performance Bonus Statement</a></li>
+                      <?php endif; ?>
+                      <?php if($user_type == 1 || $special_bonus_statement['status'] == 1): ?>
                       <li><a href="<?php echo base_url() ?>special-bonus-statement">Special Bonus Statement</a></li>
+                      <?php endif; ?>
                       <?php if ($user_id == 6) {?>
                         <!-- <li><a href="#">Provident Fund Statement</a></li>
                         <li><a href="#">Medical Reimbursement Statement</a></li>

@@ -266,7 +266,7 @@ class PfReportController extends CI_Controller
             }
             die();
         }
-        if ($this->all_company_access['status'] == 1 || $this->user_type == 1) {
+        if ($this->all_company_access['status'] == 1 || $this->user_type == 1 || $this->user_type == 9) {
 
             $data['alldivision'] = $this->taxonomy->getTaxonomyByvid(1);
             // dd( $data['alldivision'] );
